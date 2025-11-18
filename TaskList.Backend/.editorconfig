@@ -1,0 +1,106 @@
+[*.cs]
+
+# Ensure the naming violation is Warning+ during build
+dotnet_diagnostic.IDE1006.severity = warning
+
+# Enable naming rules enforcement
+dotnet_analyzer_diagnostic.category-naming.severity = warning
+csharp_indent_labels = one_less_than_current
+csharp_using_directive_placement = outside_namespace:silent
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_prefer_braces = true:silent
+csharp_style_namespace_declarations = block_scoped:warning
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_prefer_system_threading_lock = true:suggestion
+csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_constructors = false:silent
+csharp_style_expression_bodied_operators = false:silent
+
+[**/Migrations/*.cs]
+dotnet_diagnostic.IDE1006.severity = none
+dotnet_analyzer_diagnostic.category-naming.severity = none
+
+##############################
+# Naming conventions
+##############################
+
+# Private fields -> _camelCase
+dotnet_naming_rule.private_fields_underscore.symbols  = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_prefix
+dotnet_naming_rule.private_fields_underscore.severity = warning
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers = 
+
+dotnet_naming_style.underscore_prefix.capitalization = camel_case
+dotnet_naming_style.underscore_prefix.required_prefix = _
+
+# Constants -> PascalCase
+dotnet_naming_rule.constants_pascal.symbols  = constants
+dotnet_naming_rule.constants_pascal.style = pascal
+dotnet_naming_rule.constants_pascal.severity = warning
+
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.required_modifiers = const
+dotnet_naming_symbols.constants.applicable_accessibilities = *
+
+dotnet_naming_style.pascal.capitalization = pascal_case
+
+# Classes, methods, properties, enums -> PascalCase
+dotnet_naming_rule.types_members_pascal.symbols  = types_members
+dotnet_naming_rule.types_members_pascal.style = pascal
+dotnet_naming_rule.types_members_pascal.severity = warning
+
+dotnet_naming_symbols.types_members.applicable_kinds = class, struct, enum, method, property
+dotnet_naming_symbols.types_members.applicable_accessibilities = *
+dotnet_naming_symbols.types_members.required_modifiers = 
+
+# ===============================
+# Test Methods Naming Rule
+# ===============================
+[**/*Tests.cs]
+dotnet_diagnostic.CA1707.severity = none
+
+##############################
+# Style rules
+##############################
+
+# Require file-scoped namespaces (instead of block-scoped)
+csharp_style_namespace_declarations = file_scoped:warning
+
+# Interfaces -> PascalCase with I prefix
+dotnet_naming_rule.interfaces_should_start_with_i.symbols  = interfaces
+dotnet_naming_rule.interfaces_should_start_with_i.style = prefix_I
+dotnet_naming_rule.interfaces_should_start_with_i.severity = warning
+
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+dotnet_naming_symbols.interfaces.required_modifiers = 
+
+dotnet_naming_style.prefix_I.capitalization = pascal_case
+dotnet_naming_style.prefix_I.required_prefix = I
+csharp_indent_labels = one_less_than_current
+csharp_using_directive_placement = outside_namespace:silent
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_prefer_braces = true:silent
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_prefer_system_threading_lock = true:suggestion
+csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_constructors = false:silent
+csharp_style_expression_bodied_operators = false:silent
+csharp_style_expression_bodied_properties = true:silent
+csharp_style_expression_bodied_indexers = true:silent
+csharp_style_expression_bodied_accessors = true:silent
+csharp_style_expression_bodied_lambdas = true:silent
+csharp_style_expression_bodied_local_functions = false:silent
+[*.{cs,vb}]
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+indent_size = 4
+end_of_line = crlf
+dotnet_style_coalesce_expression = true:suggestion

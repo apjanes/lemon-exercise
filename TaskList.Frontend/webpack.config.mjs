@@ -1,0 +1,68 @@
+﻿import path from "path";
+import process from "process";
+import Dotenv from "dotenv-webpack";
+import yargs from "yargs";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const args = yargs(process.argv).argv;
+const env = args.env?.toLowerCase() || "development";
+const mode = env == "development" ? "development" : "production";
+
+process.env.NODE_ENV = env;
+
+export default {
+  mode,
+  devtool: "inline-source-map",
+  entry: "./src/index.tsx",
+  plugins: [
+    new Dotenv({
+      path: path.resolve(__dirname, `./.env.${env}`),
+      systemvars: true,
+    }),
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              allowTsInNodeModules: true, // Enable compilation of .ts files in node_modules
+            },
+          },
+          {
+            loader: "source-map-loader",
+          },
+        ],
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.scss$/i,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
+    ],
+  },
+  resolve: {
+    alias: {
+      "~": path.resolve(__dirname, "src"),
+    },
+    extensions: [".tsx", ".ts", ".js", ".css", ".scss"],
+  },
+  output: {
+    filename: "app.js",
+    path: path.resolve(__dirname, "wwwroot/dist"),
+  },
+};

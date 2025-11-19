@@ -1,18 +1,29 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { getAccessToken } from "~/tokenStore";
-import { login as apiLogin, logout as apiLogout, refreshToken } from "~/auth";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { setAccessToken } from "~/tokenStore";
+import {
+  login as apiLogin,
+  logout as apiLogout,
+  refreshToken as apiRefresh,
+} from "~/api/auth";
 
 interface AuthContextType {
   accessToken: string | null;
   isAuthenticated: boolean;
   isInitializing?: boolean;
-  userLogin: (username: string, password: string) => Promise<void>;
-  userLogout: () => Promise<void>;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  // DEBUG: possibly move
   const [accessTokenState, setAccessTokenState] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState<boolean>(true);
 
@@ -21,7 +32,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     (async () => {
       try {
-        const token = await refreshToken();
+        const token = await apiRefresh();
         setAccessTokenState(token);
       } finally {
         setIsInitializing(false);
@@ -29,21 +40,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     })();
   }, []);
 
-  // useEffect(() => {
-  //   setAccessToken(accessTokenState);
-  // }, [accessTokenState]);
+  const isAuthenticated = useMemo(() => {
+    return accessTokenState !== null;
+  }, [accessTokenState]);
 
-  const userLogin = async (username: string, password: string) => {
-    await apiLogin(username, password);
-    const token = getAccessToken();
-
-    // DEBUG: remove?
+  const login = async (username: string, password: string) => {
+    const token = await apiLogin(username, password);
+    setAccessToken(token);
     setAccessTokenState(token);
+    return !!token;
   };
 
-  const userLogout = async () => {
+  const logout = async () => {
     await apiLogout();
-    // DEBUG: remove?
+    setAccessToken(null);
     setAccessTokenState(null);
   };
 
@@ -51,10 +61,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         accessToken: accessTokenState,
-        isAuthenticated: accessTokenState !== null,
+        isAuthenticated: isAuthenticated,
         isInitializing,
-        userLogin,
-        userLogout,
+        login,
+        logout,
       }}
     >
       {children}

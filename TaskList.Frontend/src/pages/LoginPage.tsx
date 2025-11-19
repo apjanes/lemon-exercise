@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
@@ -10,16 +10,17 @@ import "~/css/LoginPage.scss";
 function LoginPage(): React.ReactElement {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
-
-  const { userLogin: login, isAuthenticated } = useAuth();
+  const { login: login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
   const handleOnClick = async () => {
     await login(username, password);
+  };
+
+  useEffect(() => {
     if (isAuthenticated) {
       navigate("/", { replace: true });
     }
-  };
+  }, [isAuthenticated]);
 
   return (
     <AppLayout>

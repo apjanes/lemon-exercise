@@ -19,20 +19,6 @@ public class AuthController : Controller
         _refreshStore = refreshStore;
     }
 
-    // DEBUG: remove
-    [HttpGet("status")]
-    public IActionResult Status()
-    {
-        var cookie = Request.Cookies["rt"];
-        if (User?.Identity?.IsAuthenticated == true)
-        {
-            // DEBUG: add info?
-            return Ok(new { isAutheticated = true, username = User.Identity.Name });
-        }
-
-        return Unauthorized(new { isAutheticated = false });
-    }
-
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto request)
@@ -109,10 +95,8 @@ public class AuthController : Controller
 
         Response.Cookies.Append("rt", refreshToken, new CookieOptions
         {
-            // DEBUG: back to true
-            HttpOnly = false,
-            // DEBUG: back to true
-            Secure = false,
+            HttpOnly = true,
+            Secure = true,
             SameSite = SameSiteMode.Strict,
             Path = "/auth",
             Expires = expiresAt

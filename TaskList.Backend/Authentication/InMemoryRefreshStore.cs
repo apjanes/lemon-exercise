@@ -20,7 +20,10 @@ public class InMemoryRefreshStore : IRefreshStore
     {
         if (_store.TryGetValue(token, out var value))
         {
-            if (value.expiry > DateTimeOffset.UtcNow) return Task.FromResult<RefreshToken?>(new RefreshToken(value.userId, value.expiry));
+            if (value.expiry > DateTimeOffset.UtcNow)
+            {
+                return Task.FromResult<RefreshToken?>(new RefreshToken(value.userId, value.expiry));
+            }
             _store.TryRemove(token, out _);
         }
         return Task.FromResult<RefreshToken?>(null);
@@ -28,8 +31,7 @@ public class InMemoryRefreshStore : IRefreshStore
 
     public Task DeleteAsync(string token)
     {
-        // DEBUG: implement
-        //throw new NotImplementedException();
+        _store.TryRemove(token, out _);
         return Task.CompletedTask;
     }
 }

@@ -43,34 +43,6 @@ public static class ServiceContainerExtensions
                     IssuerSigningKey = jwtConfiguration.SigningKey,
                     ClockSkew = TimeSpan.Zero
                 };
-                // DEBUG: rempove
-                // Handle missing tokens gracefully for AllowAnonymous endpoints
-                //options.Events = new JwtBearerEvents
-                //{
-                //    OnMessageReceived = context =>
-                //    {
-                //        // Check if Authorization header exists
-                //        var token = context.Request.Headers["Authorization"].ToString();
-                //        if (string.IsNullOrEmpty(token))
-                //        {
-                //            // No token provided - skip authentication (allows AllowAnonymous to work)
-                //            context.NoResult();
-                //            return Task.CompletedTask;
-                //        }
-                //        return Task.CompletedTask;
-                //    },
-                //    OnChallenge = context =>
-                //    {
-                //        // If there's no Authorization header, skip the challenge
-                //        var authHeader = context.Request.Headers["Authorization"].ToString();
-                //        if (string.IsNullOrEmpty(authHeader))
-                //        {
-                //            context.HandleResponse();
-                //            return Task.CompletedTask;
-                //        }
-                //        return Task.CompletedTask;
-                //    }
-                //};
             });
 
         return services;

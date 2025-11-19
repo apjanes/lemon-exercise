@@ -48,6 +48,10 @@ export default {
         use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: "asset/resource",
+      },
+      {
         test: /\.m?js$/,
         resolve: {
           fullySpecified: false,
@@ -60,6 +64,7 @@ export default {
       "~": path.resolve(__dirname, "src"),
     },
     extensions: [".tsx", ".ts", ".js", ".css", ".scss"],
+    mainFields: ["main", "module"],
   },
   output: {
     filename: "app.js",

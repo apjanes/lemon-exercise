@@ -32,5 +32,8 @@ body {
 .layout__heading {
   color: white;
   font-size: 1.3em;
-  padding-left: var(--spacing-double);
+}
+
+.layout__heading-icon {
+  margin-right: var(--spacing-half);
 }

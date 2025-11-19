@@ -8,8 +8,8 @@ function AppLayout({ children }: IProps): React.ReactElement<IProps> {
     <div className="layout">
       <div className="layout__header-bar">
         <div className="layout__heading">
-          <span className="pi pi-pen-to-square" />
-          Test
+          <i className="layout__heading-icon pi pi-pen-to-square" />
+          Task List
         </div>
       </div>
 

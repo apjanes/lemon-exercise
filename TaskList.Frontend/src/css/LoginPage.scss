@@ -1,0 +1,11 @@
+.login-page {
+  &__label {
+    display: inline-block;
+    width: 100px;
+    margin-bottom: var(--spacing-half);
+  }
+
+  &__row {
+    margin-bottom: var(--spacing-half);
+  }
+}

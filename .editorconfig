@@ -1,26 +1,24 @@
+root=true
+
 [*.cs]
 
-# Ensure the naming violation is Warning+ during build
-dotnet_diagnostic.IDE1006.severity = warning
+dotnet_analyzer_diagnostic.category-naming.severity = error
+dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA1034.severity = none
+dotnet_diagnostic.CA1052.severity = none
+dotnet_diagnostic.CA1054.severity = none
+dotnet_diagnostic.CA1055.severity = none
+dotnet_diagnostic.CA1056.severity = none
+dotnet_diagnostic.CA1305.severity = none
+dotnet_diagnostic.CA1515.severity = none
+dotnet_diagnostic.CA1716.severity = none
+dotnet_diagnostic.CA1724.severity = none
+dotnet_diagnostic.CA1812.severity = none
+dotnet_diagnostic.CA2007.severity = none
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.IDE0161.severity = error
+dotnet_diagnostic.IDE1006.severity = error
 
-# Enable naming rules enforcement
-dotnet_analyzer_diagnostic.category-naming.severity = warning
-csharp_indent_labels = one_less_than_current
-csharp_using_directive_placement = outside_namespace:silent
-csharp_prefer_simple_using_statement = true:suggestion
-csharp_prefer_braces = true:silent
-csharp_style_namespace_declarations = block_scoped:warning
-csharp_style_prefer_method_group_conversion = true:silent
-csharp_style_prefer_top_level_statements = true:silent
-csharp_style_prefer_primary_constructors = true:suggestion
-csharp_prefer_system_threading_lock = true:suggestion
-csharp_style_expression_bodied_methods = false:silent
-csharp_style_expression_bodied_constructors = false:silent
-csharp_style_expression_bodied_operators = false:silent
-
-[**/Migrations/*.cs]
-dotnet_diagnostic.IDE1006.severity = none
-dotnet_analyzer_diagnostic.category-naming.severity = none
 
 ##############################
 # Naming conventions
@@ -49,6 +47,17 @@ dotnet_naming_symbols.constants.applicable_accessibilities = *
 
 dotnet_naming_style.pascal.capitalization = pascal_case
 
+# Static readonly fields -> PascalCase
+dotnet_naming_rule.static_readonly_fields_pascal.symbols  = static_readonly_fields
+dotnet_naming_rule.static_readonly_fields_pascal.style = pascal
+dotnet_naming_rule.static_readonly_fields_pascal.severity = warning
+
+dotnet_naming_symbols.static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.static_readonly_fields.required_modifiers = static, readonly
+dotnet_naming_symbols.static_readonly_fields.applicable_accessibilities = *
+
+dotnet_naming_style.pascal.capitalization = pascal_case
+
 # Classes, methods, properties, enums -> PascalCase
 dotnet_naming_rule.types_members_pascal.symbols  = types_members
 dotnet_naming_rule.types_members_pascal.style = pascal
@@ -58,18 +67,12 @@ dotnet_naming_symbols.types_members.applicable_kinds = class, struct, enum, meth
 dotnet_naming_symbols.types_members.applicable_accessibilities = *
 dotnet_naming_symbols.types_members.required_modifiers = 
 
-# ===============================
-# Test Methods Naming Rule
-# ===============================
-[**/*Tests.cs]
-dotnet_diagnostic.CA1707.severity = none
-
 ##############################
 # Style rules
 ##############################
 
 # Require file-scoped namespaces (instead of block-scoped)
-csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_namespace_declarations = file_scoped
 
 # Interfaces -> PascalCase with I prefix
 dotnet_naming_rule.interfaces_should_start_with_i.symbols  = interfaces
@@ -98,9 +101,26 @@ csharp_style_expression_bodied_indexers = true:silent
 csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
+
 [*.{cs,vb}]
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4
 indent_size = 4
 end_of_line = crlf
 dotnet_style_coalesce_expression = true:suggestion
+
+# ===============================
+# Test Overrides
+# ===============================
+[**/*Tests.cs]
+dotnet_diagnostic.CA1707.severity = none
+
+# ===============================
+# Migration Overrides
+# ===============================
+[**/Migrations/*.cs]
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.IDE0161.severity = none
+dotnet_analyzer_diagnostic.category-naming.severity = none

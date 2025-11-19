@@ -13,7 +13,7 @@ public static class ServiceContainerExtensions
     {
         services.AddDbContext<TaskListDbContext>(x =>
         {
-            x.UseInMemoryDatabase("taskList");
+            x.UseSqlite("DataSource=taskList.sqlite");
         });
 
         services.AddScoped<IWorkItemRepository, WorkItemRepository>();
@@ -26,8 +26,10 @@ public static class ServiceContainerExtensions
     {
         var jwtConfiguration = new JwtConfiguration(configuration);
         services.AddSingleton<IJwtConfiguration>(jwtConfiguration);
-        services.AddSingleton<TokenService>(new TokenService(jwtConfiguration));
+        services.AddSingleton(new TokenService(jwtConfiguration));
         services.AddSingleton<IRefreshStore, InMemoryRefreshStore>();
+
+
         services
             .AddAuthentication(options =>
             {
@@ -41,7 +43,10 @@ public static class ServiceContainerExtensions
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = jwtConfiguration.SigningKey,
-                    ClockSkew = TimeSpan.Zero
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(2)
                 };
             });
 

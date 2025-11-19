@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskList.Backend.Data.Dtos;
+using TaskList.Backend.Data.Entities;
 using TaskList.Backend.Data.Repositories;
 
 namespace TaskList.Backend.Controllers;
@@ -21,14 +22,16 @@ public class WorkItemsController : Controller
     public async Task<ActionResult<IEnumerable<WorkItemDto>>> ListAsync()
     {
         var workItems = await _repository.ListAsync();
-        var result = workItems.Select(x => new WorkItemDto(x));
+        var result = workItems.Select(x => x.ToDto());
 
         return Ok(result);
     }
 
+    [HttpPost]
     [HttpPut]
-    public async Task SaveAsync(WorkItemDto item)
+    public async Task<WorkItemDto> CreateAsync(WorkItemDto dto)
     {
-        await _repository.SaveAsync(item.ToEntity());
+        var saved = await _repository.SaveAsync(WorkItem.FromDto(dto));
+        return saved.ToDto();
     }
 }

@@ -21,40 +21,41 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-let isRefreshing = false;
-let waiters: Array<() => void> = [];
+// DEBUG: remove if i cant fix
+// let isRefreshing = false;
+// let waiters: Array<() => void> = [];
 
-apiClient.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const original = error.config!;
-    const status = error.response?.status;
+// apiClient.interceptors.response.use(
+//   (response) => response,
+//   async (error: AxiosError) => {
+//     const original = error.config!;
+//     const status = error.response?.status;
 
-    if (status === 401 && !original.headers?.["x-retried"]) {
-      if (!isRefreshing) {
-        isRefreshing = true;
-        try {
-          await refreshToken();
-          waiters.forEach((x) => x());
-          waiters = [];
-        } catch {
-          setAccessToken(null);
-          waiters = [];
-        } finally {
-          isRefreshing = false;
-        }
-      }
+//     if (status === 401 && !original.headers?.["x-retried"]) {
+//       if (!isRefreshing) {
+//         isRefreshing = true;
+//         try {
+//           await refreshToken();
+//           waiters.forEach((x) => x());
+//           waiters = [];
+//         } catch {
+//           setAccessToken(null);
+//           waiters = [];
+//         } finally {
+//           isRefreshing = false;
+//         }
+//       }
 
-      await new Promise<void>((resolve) => waiters.push(resolve));
+//       await new Promise<void>((resolve) => waiters.push(resolve));
 
-      original.headers.set("Authorization", `Bearer ${getAccessToken()}`);
-      original.headers.set("x-retried", "1");
+//       original.headers.set("Authorization", `Bearer ${getAccessToken()}`);
+//       original.headers.set("x-retried", "1");
 
-      return apiClient(original);
-    }
+//       return apiClient(original);
+//     }
 
-    return Promise.reject(error);
-  },
-);
+//     return Promise.reject(error);
+//   },
+// );
 
 export default apiClient;

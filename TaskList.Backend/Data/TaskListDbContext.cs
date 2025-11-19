@@ -9,11 +9,14 @@ public class TaskListDbContext : DbContext
     {
     }
 
+    public DbSet<User> Users { get; set; }
+
     public DbSet<WorkItem> WorkItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfiguration(new User.Configuration());
         modelBuilder.ApplyConfiguration(new WorkItem.Configuration());
     }
 }

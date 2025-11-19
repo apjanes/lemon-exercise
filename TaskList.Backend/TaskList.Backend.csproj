@@ -4,10 +4,10 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <TreatWarningsAsErrorsx>true</TreatWarningsAsErrorsx>
+    <EnforceCodeStyleInBuildx>true</EnforceCodeStyleInBuildx>
+    <EnableNETAnalyzersx>true</EnableNETAnalyzersx>
+    <AnalysisModex>AllEnabledByDefault</AnalysisModex>
   </PropertyGroup>
 
   <ItemGroup>

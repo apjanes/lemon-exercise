@@ -6,5 +6,7 @@ public interface IWorkItemRepository
 {
     public Task<IEnumerable<WorkItem>> ListAsync(CancellationToken cancellationToken = default);
 
-    public Task SaveAsync(WorkItem workItem, CancellationToken cancellationToken = default);
+    public Task<WorkItem?> FindAsync(Guid id, CancellationToken cancellationToken = default);
+
+    public Task<WorkItem> SaveAsync(WorkItem workItem, CancellationToken cancellationToken = default);
 }

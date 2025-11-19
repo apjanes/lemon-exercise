@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const isAuthenticated = useMemo(() => {
     return accessTokenState !== null;
-  }, [accessTokenState]);
+  }, [accessTokenState, isInitializing]);
 
   const login = async (username: string, password: string) => {
     const token = await apiLogin(username, password);

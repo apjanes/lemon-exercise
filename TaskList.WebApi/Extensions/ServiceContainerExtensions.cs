@@ -18,7 +18,9 @@ public static class ServiceContainerExtensions
             x.UseSqlite("DataSource=taskList.sqlite");
         });
 
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IWorkItemRepository, WorkItemRepository>();
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
         return services;
 
@@ -43,12 +45,15 @@ public static class ServiceContainerExtensions
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    // DEBUG: fix;
+#pragma warning disable CA5404
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = jwtConfiguration.SigningKey,
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromMinutes(2)
+#pragma warning restore CA5404
                 };
             });
 

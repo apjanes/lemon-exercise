@@ -1,11 +1,33 @@
+using Microsoft.EntityFrameworkCore;
+using TaskList.Domain.Entities;
+using TaskList.Infrastructure;
 using TaskList.WebApi.Extensions;
 
 namespace TaskList.WebApi;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
+        /* DEBUG:
+        // Populating users and passwords like this is completely unsuitable for production applications. This is done
+           // purely for easy of developing the exercise.
+           var flintstoneHash = "AQAAAAEAACcQAAAAEEzWXygc1o8QVxhOzEVaaL/UMIyVOVMkMGiSdnG9SCKQw1yrZ3oIxmnZh2kPguIEMQ==";
+           var rubbleHash = "AQAAAAEAACcQAAAAEDxSrZuI7KgZzTFboZNS9ZeWzJIj3l/KI67tETVtLPnRpuaet5LKBbx1GbtiOjldNw==";
+
+           builder
+               .HasData(new User
+               {
+                   Id = new Guid("0000019a-a11c-f278-f6dc-915e81c6b2d0"),
+                   Username = "fred",
+                   PasswordHash = flintstoneHash
+               }, new User
+               {
+                   Id = new Guid("0000019a-a11c-f279-00ea-7ec897888d30"),
+                   Username = "barney",
+                   PasswordHash = rubbleHash
+               });
+        */
         var builder = WebApplication.CreateBuilder(args);
 
         // Add task list dependencies
@@ -44,6 +66,60 @@ public static class Program
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
-        app.Run();
+
+        await InitialiseData(app.Services);
+        await app.RunAsync();
+    }
+
+    /// <summary>
+    /// DEBUG: finish comment. Create user registration if possible.
+    /// Initialize dummy data required for running the exercise. This approach would not be used for any real-life
+    /// system but exists to manage 
+
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    private static async Task InitialiseData(IServiceProvider services)
+    {
+        using (var scope = services.CreateScope())
+        {
+            var scopedServices = scope.ServiceProvider;
+            var hasher = scopedServices.GetRequiredService<IPasswordHasher>();
+            var dbContext = scopedServices.GetRequiredService<TaskListDbContext>();
+
+            await dbContext.Database.MigrateAsync();
+
+            var fred = new User
+            {
+                Id = new Guid("0000019a-a11c-f278-f6dc-915e81c6b2d0"),
+                FirstName = "Fred",
+                LastName = "Flintstone",
+                Username = "fred",
+                PasswordHash = hasher.Hash("flintstone")
+            };
+
+            var barney = new User
+            {
+                Id = new Guid("0000019a-a11c-f279-00ea-7ec897888d30"),
+                FirstName = "Barney",
+                LastName = "Rubble",
+                Username = "barney",
+                PasswordHash = hasher.Hash("rubble")
+            };
+
+            await AddIfMissingAsync(fred, dbContext);
+            await AddIfMissingAsync(barney, dbContext);
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    private static async Task AddIfMissingAsync(User user, TaskListDbContext dbContext)
+    {
+        var existing = await dbContext.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
+
+        if (existing == null)
+        {
+            dbContext.Users.Add(user);
+        }
     }
 }

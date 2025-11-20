@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TaskList.Domain.Repositories;
 using TaskList.WebApi.Authentication;
 using TaskList.WebApi.Dtos;
 
@@ -12,11 +13,13 @@ public class AuthController : Controller
 {
     private readonly TokenService _tokenService;
     private readonly IRefreshStore _refreshStore;
+    private readonly IUserRepository _userRepository;
 
-    public AuthController(TokenService tokenService, IRefreshStore refreshStore)
+    public AuthController(TokenService tokenService, IRefreshStore refreshStore, IUserRepository userRepository)
     {
         _tokenService = tokenService;
         _refreshStore = refreshStore;
+        _userRepository = userRepository;
     }
 
     [HttpPost("login")]
@@ -24,12 +27,13 @@ public class AuthController : Controller
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto request)
     {
         // DEBUG:
-        if (request.Username != "test" || request.Password != "test")
+        var user = await _userRepository.FindAsync(request.Username, request.Password);
+        if (user == null)
         {
             return Unauthorized();
         }
 
-        var userId = "DEBUG:";
+        var userId = user.Username;
         var accessToken = _tokenService.CreateAccessToken(userId);
         var refreshToken = _tokenService.CreateRefreshToken();
         var now = DateTimeOffset.UtcNow;

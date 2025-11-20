@@ -19,7 +19,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TaskList.WebApi\TaskList.WebApi.csproj" />
+    <ProjectReference Include="..\TaskList.Infrastructure\TaskList.Infrastructure.csproj" />
   </ItemGroup>
-
 </Project>

@@ -10,7 +10,7 @@ import { AppLayout } from "~/components/AppLayout";
 import { Button } from "primereact/button";
 import { WorkItemDialog } from "~/components/workItems/WorkItemDialog";
 import { ConfirmDeleteDialog } from "~/components/workItems/ConfirmDeleteDialog";
-
+import "~/pages/HomePage.scss";
 enum DialogType {
   None,
   Add,
@@ -63,6 +63,7 @@ function HomePage(): React.ReactElement {
     setVisibleDialogType(DialogType.None);
   };
 
+  // DEBUG: on edit the item should be fetch from the API
   const handleEditClicked = (rowData: WorkItem) => {
     setActiveWorkItem(rowData);
     setVisibleDialogType(DialogType.Edit);
@@ -80,14 +81,16 @@ function HomePage(): React.ReactElement {
   return (
     <AppLayout>
       <div className="home-page">
-        <h1>
+        <h1 className="home-page__title">
           Work Items{" "}
-          <Button
-            type="button"
-            aria-label="Add new work item"
-            icon="pi pi-plus"
-            onClick={handleAddClicked}
-          />
+          <div className="home-page__title-content">
+            <Button
+              type="button"
+              aria-label="Add new work item"
+              icon="pi pi-plus"
+              onClick={handleAddClicked}
+            />
+          </div>
         </h1>
         <DataTable
           value={workItems}

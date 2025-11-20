@@ -2,7 +2,11 @@
 
 public class User
 {
-    public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.UtcNow;
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+
+    public required string FirstName { get; set; }
+
+    public required string LastName { get; set; }
 
     public Guid Id { get; set; }
 

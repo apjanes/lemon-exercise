@@ -11,8 +11,8 @@ using TaskList.Infrastructure;
 namespace TaskList.Infrastructure.Migrations
 {
     [DbContext(typeof(TaskListDbContext))]
-    [Migration("20251120084904_WorkItem_Summary_RenameToTitle")]
-    partial class WorkItem_Summary_RenameToTitle
+    [Migration("20251120135359_User_Username_AddUniqueIndex")]
+    partial class User_Username_AddUniqueIndex
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,7 +26,7 @@ namespace TaskList.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -42,6 +42,9 @@ namespace TaskList.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

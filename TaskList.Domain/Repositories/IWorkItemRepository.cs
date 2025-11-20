@@ -12,5 +12,5 @@ public interface IWorkItemRepository
 
     public Task<WorkItem> CreateAsync(WorkItem workItem, CancellationToken cancellationToken = default);
 
-    public Task<WorkItem> UpdateAsync(Guid id, WorkItem workItem, CancellationToken cancellationToken = default);
+    public Task<WorkItem?> UpdateAsync(Guid id, WorkItem workItem, CancellationToken cancellationToken = default);
 }

@@ -5,24 +5,24 @@
 namespace TaskList.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class WorkItem_Summary_RenameToTitle : Migration
+    public partial class User_Username_AddUniqueIndex : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Summary",
-                table: "WorkItems",
-                newName: "Title");
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Title",
-                table: "WorkItems",
-                newName: "Summary");
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Username",
+                table: "Users");
         }
     }
 }

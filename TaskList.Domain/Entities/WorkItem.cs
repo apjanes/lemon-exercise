@@ -11,7 +11,7 @@ public class WorkItem
 
         if (id == Guid.Empty)
         {
-            throw new ArgumentException(nameof(id), "The id cannot be empty.");
+            throw new ArgumentException("The id cannot be empty.", nameof(id));
         }
 
         Id = id;

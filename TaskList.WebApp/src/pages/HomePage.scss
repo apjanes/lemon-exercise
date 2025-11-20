@@ -1,0 +1,11 @@
+.home-page {
+  &__title {
+    display: flex;
+  }
+
+  &__title-content {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+  }
+}

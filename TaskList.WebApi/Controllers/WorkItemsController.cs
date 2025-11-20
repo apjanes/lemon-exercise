@@ -51,6 +51,7 @@ public class WorkItemsController : Controller
 
         var workItem = dto.ToEntity();
         var saved = await _repository.UpdateAsync(id, workItem);
-        return Ok(saved.ToDto());
+
+        return saved == null ? NotFound() : Ok(saved.ToDto());
     }
 }

@@ -41,9 +41,8 @@ public class WorkItemRepository : IWorkItemRepository
     {
         var result = await _dbContext
             .WorkItems
-            // DEBUG: fix and reinstate
-            //.OrderBy(x => x.IsComplete)
-            //.ThenByDescending(x => x.CreatedAt)
+            .OrderBy(x => x.IsComplete)
+            .ThenByDescending(x => x.CreatedAt)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 

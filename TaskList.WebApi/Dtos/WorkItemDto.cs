@@ -17,7 +17,7 @@ public class WorkItemDto
         Summary = workItem.Summary;
     }
 
-    public DateTimeOffset? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
     public string? Description { get; set; }
 

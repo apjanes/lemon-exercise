@@ -5,7 +5,7 @@ namespace TaskList.Domain.Entities;
 public class WorkItem
 {
     [SetsRequiredMembers]
-    public WorkItem(Guid id, string summary, string? description, DateTimeOffset createdAt, bool isComplete = false)
+    public WorkItem(Guid id, string summary, string? description, DateTime createdAt, bool isComplete = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(summary);
 
@@ -17,7 +17,7 @@ public class WorkItem
         Id = id;
         Summary = summary.Trim();
         Description = description;
-        CreatedAt = createdAt == default ? DateTimeOffset.UtcNow : createdAt;
+        CreatedAt = createdAt == default ? DateTime.UtcNow : createdAt;
         IsComplete = isComplete;
     }
 
@@ -34,7 +34,7 @@ public class WorkItem
         Update(source.Summary, source.Description, source.IsComplete);
     }
 
-    public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.UtcNow;
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
     public string? Description { get; set; }
 

@@ -2,13 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "wwwroot/dist/",
-    "target": "es5",
+    "target": "es2020",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
-    "module": "es6",
+    "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "sourceMap": true,
@@ -17,10 +17,6 @@
       "~/*": ["src/*"]
     }
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules"],
+  "include": ["src"]
 }

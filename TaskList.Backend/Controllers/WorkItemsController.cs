@@ -29,9 +29,10 @@ public class WorkItemsController : Controller
 
     [HttpPost]
     [HttpPut]
-    public async Task<WorkItemDto> CreateAsync(WorkItemDto dto)
+    public async Task<WorkItemDto> SaveAsync(WorkItemDto dto)
     {
-        var saved = await _repository.SaveAsync(WorkItem.FromDto(dto));
+        var workItem = WorkItem.FromDto(dto);
+        var saved = await _repository.SaveAsync(workItem, dto.IsNew);
         return saved.ToDto();
     }
 }

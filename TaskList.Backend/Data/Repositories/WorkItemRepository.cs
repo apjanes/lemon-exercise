@@ -17,6 +17,8 @@ public class WorkItemRepository : IWorkItemRepository
     {
         var result = await _dbContext
             .WorkItems
+            .OrderBy(x => x.IsComplete)
+            .ThenByDescending(x => x.CreatedAt)
             .ToListAsync(cancellationToken);
 
         return result;
@@ -27,33 +29,39 @@ public class WorkItemRepository : IWorkItemRepository
         return await _dbContext.FindAsync<WorkItem>(cancellationToken);
     }
 
-    public async Task<WorkItem> SaveAsync(WorkItem workItem, CancellationToken cancellationToken = default)
+    public async Task<WorkItem> SaveAsync(WorkItem workItem, bool isNew, CancellationToken cancellationToken = default)
     {
-        // Attempt to get an existing entity with the same ID.
-        var existing = await _dbContext.FindAsync<WorkItem>(workItem.Id, cancellationToken);
-
-        if (existing == null)
+        if (isNew)
         {
-            // If there is no existing entity, add it and save.
-            _dbContext.WorkItems.Add(workItem);
-
             try
             {
-                await _dbContext.SaveChangesAsync(cancellationToken);
-                return workItem;
+                return await CreateAsync(workItem, cancellationToken);
             }
             catch (DbUpdateException exception) when (exception.IsUniqueKeyViolation())
             {
                 // In the event that another request or process created the entity between checking and saving,
                 // detach the entity and load the existing one.
                 _dbContext.Entry(workItem).State = EntityState.Detached;
-                existing = await _dbContext.FindAsync<WorkItem>(workItem.Id, cancellationToken);
+                return await UpdateAsync(workItem, cancellationToken);
             }
         }
 
-        // Update the entity and save.
-        existing!.UpdateFrom(workItem);
+        return await UpdateAsync(workItem, cancellationToken);
+    }
+
+    private async Task<WorkItem> CreateAsync(WorkItem workItem, CancellationToken cancellationToken)
+    {
+        _dbContext.WorkItems.Add(workItem);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return workItem;
+    }
+
+    private async Task<WorkItem> UpdateAsync(WorkItem workItem, CancellationToken cancellationToken)
+    {
+        // DEBUG: Handle error
+        var existing = await _dbContext.FindAsync<WorkItem>(workItem.Id, cancellationToken);
+        existing!.UpdateFrom(workItem);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return existing;
     }
 }

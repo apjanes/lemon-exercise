@@ -13,13 +13,20 @@ public class WorkItem
             Id = dto.Id ?? CombGuid.NewGuid(),
             Summary = dto.Summary,
             Description = dto.Description,
-            CreatedAt = dto.CreatedAt
+            CreatedAt = dto.CreatedAt ?? DateTimeOffset.UtcNow
         };
     }
 
     public WorkItemDto ToDto()
     {
-        return new WorkItemDto(this);
+        return new WorkItemDto
+        {
+            CreatedAt = CreatedAt,
+            Description = Description,
+            Id = Id,
+            IsComplete = IsComplete,
+            Summary = Summary,
+        };
     }
 
 

@@ -17,13 +17,15 @@ public class WorkItemDto
         Summary = workItem.Summary;
     }
 
-    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? CreatedAt { get; set; }
 
     public string? Description { get; set; }
 
     public Guid? Id { get; set; }
 
     public bool IsComplete { get; set; }
+
+    public bool IsNew => Id == null;
 
     public required string Summary { get; set; }
 }

@@ -6,11 +6,7 @@ import React, {
   useState,
 } from "react";
 import { setAccessToken } from "~/tokenStore";
-import {
-  login as apiLogin,
-  logout as apiLogout,
-  refreshToken as apiRefresh,
-} from "~/api/auth";
+import auth from "~/api/auth";
 
 interface AuthContextType {
   accessToken: string | null;
@@ -32,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     (async () => {
       try {
-        const token = await apiRefresh();
+        const token = await auth.refreshToken();
         setAccessTokenState(token);
       } finally {
         setIsInitializing(false);
@@ -45,14 +41,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [accessTokenState, isInitializing]);
 
   const login = async (username: string, password: string) => {
-    const token = await apiLogin(username, password);
+    const token = await auth.login(username, password);
     setAccessToken(token);
     setAccessTokenState(token);
     return !!token;
   };
 
   const logout = async () => {
-    await apiLogout();
+    await auth.logout();
     setAccessToken(null);
     setAccessTokenState(null);
   };

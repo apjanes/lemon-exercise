@@ -51,6 +51,7 @@
     "yargs": "^17.7.2"
   },
   "dependencies": {
-    "primeicons": "^7.0.0"
+    "primeicons": "^7.0.0",
+    "react-hook-form": "^7.66.1"
   }
 }

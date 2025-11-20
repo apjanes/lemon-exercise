@@ -1,7 +1,7 @@
-export type WorkItem = {
+export interface WorkItem {
   createdAt: string;
-  description: string;
+  description?: string;
   id: string;
   isComplete: boolean;
   summary: string;
-};
+}

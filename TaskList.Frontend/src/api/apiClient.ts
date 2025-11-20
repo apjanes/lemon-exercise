@@ -1,6 +1,5 @@
-import axios, { Axios, AxiosError } from "axios";
-import { getAccessToken, setAccessToken } from "~/tokenStore";
-import { refreshToken } from "./auth";
+import axios from "axios";
+import { getAccessToken } from "~/tokenStore";
 
 const baseURL = "https://localhost:4001";
 // DEBUG: add to .env;

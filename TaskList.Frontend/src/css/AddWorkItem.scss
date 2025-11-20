@@ -1,0 +1,33 @@
+.add-work-item {
+  display: inline-block;
+}
+
+.add-work-item__dialog {
+  &__add-button {
+    width: 75px;
+  }
+
+  &__error-messages {
+    color: red;
+    display: inline-block;
+    p {
+      position: relative;
+      padding-right: var(--spacing-half);
+      top: var(--spacing-quarter);
+    }
+  }
+
+  &__input {
+    width: 300px;
+  }
+
+  &__row {
+    margin-bottom: 1rem;
+  }
+
+  label {
+    vertical-align: top;
+    display: inline-block;
+    width: 100px;
+  }
+}

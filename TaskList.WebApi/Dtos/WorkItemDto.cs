@@ -10,12 +10,14 @@ public class WorkItemDto
     [SetsRequiredMembers]
     internal WorkItemDto(WorkItem workItem)
     {
+        CompletedAt = workItem.CompletedAt;
         CreatedAt = workItem.CreatedAt;
         Description = workItem.Description;
         Id = workItem.Id;
-        IsComplete = workItem.IsComplete;
         Title = workItem.Title;
     }
+
+    public DateTime? CompletedAt { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
@@ -23,7 +25,7 @@ public class WorkItemDto
 
     public Guid? Id { get; set; }
 
-    public bool IsComplete { get; set; }
+    public bool IsComplete => CompletedAt != null;
 
     public bool IsNew => Id == null;
 

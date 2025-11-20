@@ -19,6 +19,6 @@ public static class MappingExtensions
 
     public static void Apply(this WorkItem entity, WorkItemDto dto)
     {
-        entity.Update(dto.Title, dto.Description, dto.IsComplete);
+        entity.Update(dto.Title, dto.Description, dto.CompletedAt);
     }
 }

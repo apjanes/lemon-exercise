@@ -57,12 +57,27 @@ public class WorkItemRepository : IWorkItemRepository
     {
         var result = await _dbContext
             .WorkItems
-            .OrderBy(x => x.IsComplete)
+            .OrderBy(x => x.CompletedAt)
             .ThenByDescending(x => x.CreatedAt)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
         return result;
+    }
+
+    public async Task<WorkItem?> SetComplete(Guid id, bool isComplete, CancellationToken cancellationToken = default)
+    {
+        var existing = await FindAsync(id, cancellationToken);
+        if (existing == null) return null;
+
+        if (existing.IsComplete != isComplete)
+        {
+            existing.CompletedAt = isComplete ? DateTime.UtcNow : null;
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return existing;
     }
 
     public async Task<WorkItem?> UpdateAsync(Guid id, WorkItem workItem, CancellationToken cancellationToken)

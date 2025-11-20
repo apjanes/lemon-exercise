@@ -113,6 +113,7 @@ dotnet_style_coalesce_expression = true:suggestion
 # Test Overrides
 # ===============================
 [**/*Tests.cs]
+dotnet_diagnostic.CA1001.severity = none
 dotnet_diagnostic.CA1707.severity = none
 
 # ===============================

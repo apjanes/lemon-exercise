@@ -19,6 +19,14 @@ export const workItems = {
 
     return data;
   },
+
+  async setComplete(id: string, isComplete: boolean): Promise<WorkItem> {
+    const { data } = await apiClient.put(
+      `/work-items/${id}/complete/${isComplete}`,
+    );
+
+    return data;
+  },
 };
 
 export default workItems;

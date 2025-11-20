@@ -21,6 +21,7 @@ public class WorkItemsController : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<WorkItemDto>>> ListAsync()
     {
+        // DEBUG: investigate why the username is not coming through in User.Identity
         var workItems = await _repository.ListAsync();
         var result = workItems.Select(x => x.ToDto());
 
@@ -53,5 +54,19 @@ public class WorkItemsController : Controller
         var saved = await _repository.UpdateAsync(id, workItem);
 
         return saved == null ? NotFound() : Ok(saved.ToDto());
+    }
+
+    [HttpPut("{id}/complete/{isComplete}")]
+    public async Task<ActionResult<WorkItemDto>> CompleteAsync(Guid id, bool isComplete)
+    {
+        // DEBUG: finish
+        await Task.Delay(0);
+        if (id == Guid.Empty) return NotFound();
+
+        var result = await _repository.SetComplete(id, isComplete);
+
+        if (result == null) return NotFound();
+
+        return Ok(result.ToDto());
     }
 }

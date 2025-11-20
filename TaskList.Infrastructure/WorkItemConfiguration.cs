@@ -12,6 +12,8 @@ public class WorkItemConfiguration : IEntityTypeConfiguration<WorkItem>
             .Property(x => x.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+        builder.Ignore(x => x.IsComplete);
+
         builder
             .Property(x => x.Description)
             .HasMaxLength(1000);

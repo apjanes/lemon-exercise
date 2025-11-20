@@ -5,7 +5,7 @@ using Xunit;
 
 namespace TaskList.Infrastructure.Tests.Repositories;
 
-public class UserRepositoryTests : IDisposable, IAsyncDisposable
+public class UserRepositoryTests
 {
     private readonly TaskListDbContext _dbContext;
     private readonly PasswordHasher _hasher;
@@ -101,26 +101,6 @@ public class UserRepositoryTests : IDisposable, IAsyncDisposable
 
         // Assert
         Assert.Null(result);
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await _dbContext.DisposeAsync();
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            _dbContext.Dispose();
-        }
     }
 
     private UserRepository CreateSut()

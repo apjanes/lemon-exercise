@@ -11,6 +11,7 @@ import { Button } from "primereact/button";
 import { WorkItemDialog } from "~/components/workItems/WorkItemDialog";
 import { ConfirmDeleteDialog } from "~/components/workItems/ConfirmDeleteDialog";
 import "~/pages/HomePage.scss";
+import { Checkbox } from "primereact/checkbox";
 enum DialogType {
   None,
   Add,
@@ -37,6 +38,15 @@ function HomePage(): React.ReactElement {
     );
   };
 
+  const createIsComplete = (rowData: WorkItem) => {
+    return (
+      <Checkbox
+        checked={rowData.isComplete}
+        onChange={(e) => handleCompletionChanged(e.checked || false, rowData)}
+      />
+    );
+  };
+
   const handleAddClicked = () => {
     setVisibleDialogType(DialogType.Add);
   };
@@ -44,6 +54,15 @@ function HomePage(): React.ReactElement {
   const handleCanceled = () => {
     setActiveWorkItem(undefined);
     setVisibleDialogType(DialogType.None);
+  };
+
+  const handleCompletionChanged = async (
+    isComplete: boolean,
+    rowData: WorkItem,
+  ) => {
+    await workItemsApi.setComplete(rowData.id, isComplete);
+    rowData.isComplete = isComplete;
+    refetch();
   };
 
   const handleDeleteClicked = (rowData: WorkItem) => {
@@ -96,9 +115,16 @@ function HomePage(): React.ReactElement {
           value={workItems}
           loading={isPending}
           emptyMessage="No work items found."
+          removableSort
         >
-          <Column field="title" header="Title" />
-          <Column field="description" header="Description" />
+          <Column
+            field="isComplete"
+            body={createIsComplete}
+            style={{ width: "1%" }}
+            sortable
+          />
+          <Column field="title" header="Title" sortable />
+          <Column field="description" header="Description" sortable />
           <Column header="Actions" body={createActions} />
         </DataTable>
       </div>

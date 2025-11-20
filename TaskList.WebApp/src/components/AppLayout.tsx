@@ -1,12 +1,12 @@
 import { Button } from "primereact/button";
 import React from "react";
 import { useAuth } from "~/providers/AuthProvider";
-import "~/css/AppLayout.scss";
+import "~/components/AppLayout.scss";
 interface IProps {
   children: React.ReactNode;
 }
 
-function AppLayout({ children }: IProps): React.ReactElement<IProps> {
+export function AppLayout({ children }: IProps): React.ReactElement<IProps> {
   const { logout: userLogout, isAuthenticated } = useAuth();
   const handleLogoutClick = async () => {
     await userLogout();

@@ -14,6 +14,7 @@ public static class ServiceContainerExtensions
     {
         services.AddDbContext<TaskListDbContext>(x =>
         {
+            // DEBUG: Note about running from Visual Studio
             x.UseSqlite("DataSource=taskList.sqlite");
         });
 

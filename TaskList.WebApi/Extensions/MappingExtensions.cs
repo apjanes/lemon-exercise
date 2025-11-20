@@ -14,11 +14,11 @@ public static class MappingExtensions
     public static WorkItem ToEntity(this WorkItemDto dto)
     {
         // DEBUG: question this in terms of a dto for update
-        return new WorkItem(dto.Id ?? CombGuid.NewGuid(), dto.Summary, dto.Description, dto.CreatedAt ?? DateTime.UtcNow);
+        return new WorkItem(dto.Id ?? CombGuid.NewGuid(), dto.Title, dto.Description, dto.CreatedAt ?? DateTime.UtcNow);
     }
 
     public static void Apply(this WorkItem entity, WorkItemDto dto)
     {
-        entity.Update(dto.Summary, dto.Description, dto.IsComplete);
+        entity.Update(dto.Title, dto.Description, dto.IsComplete);
     }
 }

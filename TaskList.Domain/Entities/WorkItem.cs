@@ -5,9 +5,9 @@ namespace TaskList.Domain.Entities;
 public class WorkItem
 {
     [SetsRequiredMembers]
-    public WorkItem(Guid id, string summary, string? description, DateTime createdAt, bool isComplete = false)
+    public WorkItem(Guid id, string title, string? description, DateTime createdAt, bool isComplete = false)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(summary);
+        ArgumentException.ThrowIfNullOrWhiteSpace(title);
 
         if (id == Guid.Empty)
         {
@@ -15,23 +15,23 @@ public class WorkItem
         }
 
         Id = id;
-        Summary = summary.Trim();
+        Title = title.Trim();
         Description = description;
         CreatedAt = createdAt == default ? DateTime.UtcNow : createdAt;
         IsComplete = isComplete;
     }
 
-    public void Update(string summary, string? description, bool isComplete = false)
+    public void Update(string title, string? description, bool isComplete = false)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(summary);
-        Summary = summary.Trim();
+        ArgumentException.ThrowIfNullOrWhiteSpace(title);
+        Title = title.Trim();
         Description = description;
         IsComplete = isComplete;
     }
 
     public void Update(WorkItem source)
     {
-        Update(source.Summary, source.Description, source.IsComplete);
+        Update(source.Title, source.Description, source.IsComplete);
     }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
@@ -42,5 +42,5 @@ public class WorkItem
 
     public bool IsComplete { get; set; }
 
-    public required string Summary { get; set; }
+    public required string Title { get; set; }
 }

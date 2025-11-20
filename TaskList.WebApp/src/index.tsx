@@ -2,13 +2,13 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { routes } from "~/routing";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./providers/AuthProvider";
 import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 import "primereact/resources/primereact.css";
 import "primeicons/primeicons.css";
-import "~/css/styles.scss";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "./providers/AuthProvider";
+import "~/css/global.scss";
 
 const container = document.getElementById("root");
 

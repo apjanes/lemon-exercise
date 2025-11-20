@@ -1,10 +1,23 @@
 import { WorkItem } from "~/models/WorkItem";
 import apiClient from "./apiClient";
 
-const workItems = {
+export const workItems = {
+  async delete(id: string): Promise<void> {
+    await apiClient.delete(`/work-items/${id}`);
+  },
+
   async save(workItem: Partial<WorkItem>): Promise<WorkItem> {
-    const responst = await apiClient.put("/work-items", workItem);
-    return responst.data;
+    if (workItem.id) {
+      const { data } = await apiClient.put(
+        `/work-items/${workItem.id}`,
+        workItem,
+      );
+      return data;
+    }
+
+    const { data } = await apiClient.post("/work-items", workItem);
+
+    return data;
   },
 };
 

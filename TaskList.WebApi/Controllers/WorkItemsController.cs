@@ -35,6 +35,15 @@ public class WorkItemsController : Controller
         return Ok(saved.ToDto());
     }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteAsync(Guid id)
+    {
+        var success = await _repository.DeleteAsync(id);
+
+        if (success) return Ok();
+        return NotFound();
+    }
+
     [HttpPut("{id}")]
     public async Task<ActionResult<WorkItemDto>> UpdateAsync(Guid id, WorkItemDto dto)
     {

@@ -17,7 +17,7 @@ public class WorkItemConfiguration : IEntityTypeConfiguration<WorkItem>
             .HasMaxLength(1000);
 
         builder
-            .Property(x => x.Summary)
+            .Property(x => x.Title)
             .HasMaxLength(500);
     }
 }

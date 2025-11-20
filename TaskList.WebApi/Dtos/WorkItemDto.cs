@@ -14,7 +14,7 @@ public class WorkItemDto
         Description = workItem.Description;
         Id = workItem.Id;
         IsComplete = workItem.IsComplete;
-        Summary = workItem.Summary;
+        Title = workItem.Title;
     }
 
     public DateTime? CreatedAt { get; set; }
@@ -27,5 +27,5 @@ public class WorkItemDto
 
     public bool IsNew => Id == null;
 
-    public required string Summary { get; set; }
+    public required string Title { get; set; }
 }

@@ -1,33 +1,125 @@
+import React, { useState } from "react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import React from "react";
-import AddWorkItem from "~/components/AddWorkItem";
-import AppLayout from "~/components/AppLayout";
+import { workItems as workItemsApi } from "~/api/workItems";
+import { DeleteIcon } from "~/components/icons/DeleteIcon";
+import { EditIcon } from "~/components/icons/EditIcon";
 import { useWorkItems } from "~/hooks/useWorkItems";
 import { WorkItem } from "~/models/WorkItem";
+import { AppLayout } from "~/components/AppLayout";
+import { Button } from "primereact/button";
+import { WorkItemDialog } from "~/components/workItems/WorkItemDialog";
+import { ConfirmDeleteDialog } from "~/components/workItems/ConfirmDeleteDialog";
+
+enum DialogType {
+  None,
+  Add,
+  Edit,
+  Delete,
+}
 
 function HomePage(): React.ReactElement {
   const { data: workItems, isPending, refetch } = useWorkItems();
-  const handleWorkItemAdded = () => {
+  const [visibleDialogType, setVisibleDialogType] = useState<DialogType>(
+    DialogType.None,
+  );
+  const [activeWorkItem, setActiveWorkItem] = useState<WorkItem | undefined>();
+
+  const createActions = (rowData: WorkItem) => {
+    return (
+      <>
+        <EditIcon
+          className="mr-50"
+          onClick={() => handleEditClicked(rowData)}
+        />
+        <DeleteIcon onClick={() => handleDeleteClicked(rowData)} />
+      </>
+    );
+  };
+
+  const handleAddClicked = () => {
+    setVisibleDialogType(DialogType.Add);
+  };
+
+  const handleCanceled = () => {
+    setActiveWorkItem(undefined);
+    setVisibleDialogType(DialogType.None);
+  };
+
+  const handleDeleteClicked = (rowData: WorkItem) => {
+    setActiveWorkItem(rowData);
+    setVisibleDialogType(DialogType.Delete);
+  };
+
+  const handleDeleteConfirmed = async (
+    choice: boolean,
+    toDelete: WorkItem | undefined,
+  ) => {
+    if (choice && toDelete) {
+      await workItemsApi.delete(toDelete.id);
+      refetch();
+    }
+    setActiveWorkItem(undefined);
+    setVisibleDialogType(DialogType.None);
+  };
+
+  const handleEditClicked = (rowData: WorkItem) => {
+    setActiveWorkItem(rowData);
+    setVisibleDialogType(DialogType.Edit);
+  };
+
+  const handleSaving = async (toSave: WorkItem) => {
+    await workItemsApi.save(toSave);
+  };
+
+  const handleSaved = () => {
     refetch();
+    setVisibleDialogType(DialogType.None);
   };
 
   return (
     <AppLayout>
       <div className="home-page">
         <h1>
-          Work Items <AddWorkItem onAdded={handleWorkItemAdded} />
+          Work Items{" "}
+          <Button
+            type="button"
+            aria-label="Add new work item"
+            icon="pi pi-plus"
+            onClick={handleAddClicked}
+          />
         </h1>
-        {/* {workItems && ( */}
         <DataTable
           value={workItems}
           loading={isPending}
           emptyMessage="No work items found."
         >
-          <Column field="summary" header="Summary" />
+          <Column field="title" header="Title" />
+          <Column field="description" header="Description" />
+          <Column header="Actions" body={createActions} />
         </DataTable>
-        {/* )} */}
       </div>
+
+      <WorkItemDialog
+        isVisible={visibleDialogType === DialogType.Add}
+        onCanceled={handleCanceled}
+        onSaved={handleSaved}
+        onSaving={handleSaving}
+      />
+
+      <WorkItemDialog
+        editing={activeWorkItem}
+        isVisible={visibleDialogType === DialogType.Edit}
+        onCanceled={handleCanceled}
+        onSaved={handleSaved}
+        onSaving={handleSaving}
+      />
+
+      <ConfirmDeleteDialog
+        deleting={activeWorkItem}
+        isVisible={visibleDialogType === DialogType.Delete}
+        onConfirmed={handleDeleteConfirmed}
+      />
     </AppLayout>
   );
 }

@@ -3,5 +3,5 @@ export interface WorkItem {
   description?: string;
   id: string;
   isComplete: boolean;
-  summary: string;
+  title: string;
 }

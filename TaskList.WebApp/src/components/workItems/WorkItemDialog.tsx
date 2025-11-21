@@ -29,7 +29,6 @@ export function WorkItemDialog({
     handleSubmit,
     register,
     reset,
-    setError,
   } = useForm<WorkItem>();
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { WorkItem } from "~/models/WorkItem";

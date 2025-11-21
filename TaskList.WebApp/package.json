@@ -13,25 +13,28 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "dependencies": {
+    "@tanstack/react-query": "^5.59.8",
+    "axios": "^1.7.7",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.66.1",
+    "react-icons": "^5.3.0",
+    "react-responsive-pagination": "^2.8.0",
+    "react-router-dom": "^6.23.1",
+  },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@tanstack/react-query": "^5.59.8",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
-    "axios": "^1.7.7",
     "css-loader": "^7.1.1",
-    "dotenv-webpack": "^8.1.0",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "prettier": "3.5.0",
-    "primereact": "^10.9.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-icons": "^5.3.0",
-    "react-responsive-pagination": "^2.8.0",
-    "react-router-dom": "^6.23.1",
     "sass": "^1.94.1",
     "sass-loader": "^16.0.5",
     "source-map-loader": "^5.0.0",
@@ -44,8 +47,4 @@
     "webpack-dev-server": "^5.0.4",
     "yargs": "^17.7.2"
   },
-  "dependencies": {
-    "primeicons": "^7.0.0",
-    "react-hook-form": "^7.66.1"
-  }
 }

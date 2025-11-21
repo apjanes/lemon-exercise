@@ -1,6 +1,5 @@
 ﻿import path from "path";
 import process from "process";
-import Dotenv from "dotenv-webpack";
 import yargs from "yargs";
 import { fileURLToPath } from "url";
 
@@ -16,12 +15,6 @@ export default {
   mode,
   devtool: "inline-source-map",
   entry: "./src/index.tsx",
-  plugins: [
-    new Dotenv({
-      path: path.resolve(__dirname, `./.env.${env}`),
-      systemvars: true,
-    }),
-  ],
   module: {
     rules: [
       {

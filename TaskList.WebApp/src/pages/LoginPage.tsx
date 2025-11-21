@@ -12,8 +12,6 @@ import { LoginRequest } from "~/models/LoginRequest";
 import "~/pages/LoginPage.scss";
 
 function LoginPage(): React.ReactElement {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [isSubmiting, setIsSubmitting] = useState(false);
 
@@ -21,6 +19,7 @@ function LoginPage(): React.ReactElement {
   const {
     formState: { errors },
     handleSubmit,
+    register,
     reset,
   } = useForm<LoginRequest>();
 
@@ -30,7 +29,7 @@ function LoginPage(): React.ReactElement {
     setErrorMessage(null);
     setIsSubmitting(true);
     try {
-      await login(username, password);
+      await login(data.username, data.password);
       if (isAuthenticated()) {
         navigate("/", { replace: true });
       }
@@ -70,7 +69,6 @@ function LoginPage(): React.ReactElement {
                 className="login-page__text"
                 id="username"
                 {...register("username", { required: "username is required" })}
-                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="login-page__row">
@@ -85,7 +83,6 @@ function LoginPage(): React.ReactElement {
                 id="password"
                 type="password"
                 {...register("password", { required: "password is required" })}
-                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="login-page__row">

@@ -10,8 +10,29 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="src\" />
-  </ItemGroup>
+  <PropertyGroup>
+    <ClientDir>$(MSBuildProjectDirectory)</ClientDir>
+    <ClientSrc>$(ClientDir)\src\**\*.*</ClientSrc>
+    <ClientCfg>$(ClientDir)\package*.json;$(ClientDir)\tsconfig*.json;$(ClientDir)\webpack*.mjs</ClientCfg>
+    <DistDir>$(ClientDir)\wwwroot\dist</DistDir>
+    <NpmStamp>$(ClientDir)\.npmci.stamp</NpmStamp>
+  </PropertyGroup>
 
+  <!-- Restore node modules only when lockfile changes -->
+  <Target Name="NpmRestore"
+          Inputs="$(ClientDir)\package-lock.json"
+          Outputs="$(NpmStamp)"
+          BeforeTargets="Build">
+    <Exec WorkingDirectory="$(ClientDir)" Command="npm ci" />
+    <Touch Files="$(NpmStamp)" AlwaysCreate="true" />
+  </Target>
+
+  <!-- Build frontend only when sources/config changed -->
+  <Target Name="NpmBuild"
+          DependsOnTargets="NpmRestore"
+          Inputs="$(ClientSrc);$(ClientCfg);$(NpmStamp)"
+          Outputs="$(DistDir)\app.js"
+          BeforeTargets="Build">
+    <Exec WorkingDirectory="$(ClientDir)" Command="npm run build" />
+  </Target>
 </Project>

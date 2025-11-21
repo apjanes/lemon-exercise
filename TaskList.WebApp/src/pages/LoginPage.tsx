@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
-import AppLayout from "~/components/AppLayout";
+import { AppLayout } from "~/components/AppLayout";
 import { useAuth } from "~/providers/AuthProvider";
-import "~/pages/LoginPage.scss";
 import { AxiosError } from "axios";
+
+import "~/pages/LoginPage.scss";
 
 function LoginPage(): React.ReactElement {
   const [username, setUsername] = React.useState("");

@@ -4,11 +4,11 @@ namespace TaskList.Domain.Repositories;
 
 public interface IWorkItemRepository
 {
-    public Task<WorkItem> CreateAsync(WorkItem workItem, CancellationToken cancellationToken = default);
+    public Task<WorkItem> CreateAsync(WorkItem workItem, User? createdBy, CancellationToken cancellationToken = default);
 
     public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 
-    public Task<IEnumerable<WorkItem>> ListAsync(CancellationToken cancellationToken = default);
+    public Task<IEnumerable<WorkItem>> ListAsync(User? createdBy = null, CancellationToken cancellationToken = default);
 
     public Task<WorkItem?> FindAsync(Guid id, CancellationToken cancellationToken = default);
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskList.Domain.Entities;
 using TaskList.Domain.Repositories;
 using TaskList.WebApi.Dtos;
 using TaskList.WebApi.Extensions;
@@ -11,18 +12,20 @@ namespace TaskList.WebApi.Controllers;
 [Route("work-items")]
 public class WorkItemsController : Controller
 {
-    private readonly IWorkItemRepository _repository;
+    private readonly IWorkItemRepository _workItemRepository;
+    private readonly IUserRepository _userRepository;
 
-    public WorkItemsController(IWorkItemRepository repository)
+    public WorkItemsController(IWorkItemRepository workItemRepository, IUserRepository userRepository)
     {
-        _repository = repository;
+        _workItemRepository = workItemRepository;
+        _userRepository = userRepository;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<WorkItemDto>>> ListAsync()
     {
-        // DEBUG: investigate why the username is not coming through in User.Identity
-        var workItems = await _repository.ListAsync();
+        var user = await GetUserAsync(User.Identity?.Name);
+        var workItems = await _workItemRepository.ListAsync(user);
         var result = workItems.Select(x => x.ToDto());
 
         return Ok(result);
@@ -31,15 +34,24 @@ public class WorkItemsController : Controller
     [HttpPost]
     public async Task<ActionResult<WorkItemDto>> CreateAsync(WorkItemDto dto)
     {
-        var workItem = dto.ToEntity();
-        var saved = await _repository.CreateAsync(workItem);
+        var user = await GetUserAsync(User.Identity?.Name);
+        var workItem = dto.ToEntity(user);
+        var saved = await _workItemRepository.CreateAsync(workItem, user);
         return Ok(saved.ToDto());
+    }
+
+    private async Task<User?> GetUserAsync(string? identityName)
+    {
+        if (identityName == null) return null;
+        var result = await _userRepository.FindAsync(identityName);
+
+        return result;
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {
-        var success = await _repository.DeleteAsync(id);
+        var success = await _workItemRepository.DeleteAsync(id);
 
         if (success) return Ok();
         return NotFound();
@@ -50,8 +62,9 @@ public class WorkItemsController : Controller
     {
         if (id == Guid.Empty) return NotFound();
 
-        var workItem = dto.ToEntity();
-        var saved = await _repository.UpdateAsync(id, workItem);
+        var user = await GetUserAsync(User.Identity?.Name);
+        var workItem = dto.ToEntity(user);
+        var saved = await _workItemRepository.UpdateAsync(id, workItem);
 
         return saved == null ? NotFound() : Ok(saved.ToDto());
     }
@@ -61,7 +74,7 @@ public class WorkItemsController : Controller
     {
         if (id == Guid.Empty) return NotFound();
 
-        var result = await _repository.SetComplete(id, isComplete);
+        var result = await _workItemRepository.SetComplete(id, isComplete);
 
         if (result == null) return NotFound();
 

@@ -42,6 +42,9 @@ public class WorkItem
     {
         Update(source.Title, source.Description, source.CompletedAt);
     }
+
+    public User? CreatedBy { get; set; }
+
     public DateTime? CompletedAt { get; set; }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;

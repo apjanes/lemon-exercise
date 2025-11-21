@@ -11,9 +11,14 @@ public static class MappingExtensions
         return new WorkItemDto(source);
     }
 
-    public static WorkItem ToEntity(this WorkItemDto dto)
+    public static WorkItem ToEntity(this WorkItemDto dto, User? user)
     {
-        return new WorkItem(dto.Id ?? CombGuid.NewGuid(), dto.Title, dto.Description, dto.CreatedAt ?? DateTime.UtcNow);
+        var result = new WorkItem(dto.Id ?? CombGuid.NewGuid(), dto.Title, dto.Description, dto.CreatedAt ?? DateTime.UtcNow)
+        {
+            CreatedBy = user
+        };
+
+        return result;
     }
 
     public static void Apply(this WorkItem entity, WorkItemDto dto)

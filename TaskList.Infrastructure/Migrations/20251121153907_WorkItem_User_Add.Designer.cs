@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskList.Infrastructure;
 
@@ -10,9 +11,11 @@ using TaskList.Infrastructure;
 namespace TaskList.Infrastructure.Migrations
 {
     [DbContext(typeof(TaskListDbContext))]
-    partial class TaskListDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251121153907_WorkItem_User_Add")]
+    partial class WorkItem_User_Add
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");
@@ -82,9 +85,14 @@ namespace TaskList.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("WorkItems");
                 });
@@ -95,7 +103,13 @@ namespace TaskList.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
+                    b.HasOne("TaskList.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,11 +15,13 @@ public class WorkItemDto
         Description = workItem.Description;
         Id = workItem.Id;
         Title = workItem.Title;
+        CreatedBy = UserDto.Create(workItem.CreatedBy);
     }
 
     public DateTime? CompletedAt { get; set; }
 
     public DateTime? CreatedAt { get; set; }
+    public UserDto? CreatedBy { get; set; }
 
     public string? Description { get; set; }
 
@@ -30,4 +32,5 @@ public class WorkItemDto
     public bool IsNew => Id == null;
 
     public required string Title { get; set; }
+
 }

@@ -27,7 +27,7 @@ public class WorkItemRepository : IWorkItemRepository
 
         return false;
     }
-    public async Task<WorkItem> CreateAsync(WorkItem workItem, CancellationToken cancellationToken)
+    public async Task<WorkItem> CreateAsync(WorkItem workItem, User? createdBy, CancellationToken cancellationToken)
     {
         try
         {
@@ -53,10 +53,18 @@ public class WorkItemRepository : IWorkItemRepository
         return await _dbContext.FindAsync<WorkItem>(id, cancellationToken);
     }
 
-    public async Task<IEnumerable<WorkItem>> ListAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<WorkItem>> ListAsync(User? createdBy = null, CancellationToken cancellationToken = default)
     {
-        var result = await _dbContext
+        var query = _dbContext
             .WorkItems
+            .Include(x => x.CreatedBy).AsQueryable();
+
+        if (createdBy != null)
+        {
+            query = query.Where(x => x.CreatedBy == createdBy);
+        }
+
+        var result = await query
             .OrderBy(x => x.CompletedAt)
             .ThenByDescending(x => x.CreatedAt)
             .AsNoTracking()

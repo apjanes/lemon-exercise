@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskList.Infrastructure;
 
@@ -10,9 +11,11 @@ using TaskList.Infrastructure;
 namespace TaskList.Infrastructure.Migrations
 {
     [DbContext(typeof(TaskListDbContext))]
-    partial class TaskListDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251121174918_WorkItem_CreatedBy_Add")]
+    partial class WorkItem_CreatedBy_Add
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");

@@ -125,6 +125,7 @@ function HomePage(): React.ReactElement {
           />
           <Column field="title" header="Title" sortable />
           <Column field="description" header="Description" sortable />
+          <Column field="createdBy.name" header="Created By" sortable />
           <Column header="Actions" body={createActions} />
         </DataTable>
       </div>

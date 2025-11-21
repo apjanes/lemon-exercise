@@ -2,20 +2,17 @@
 This repository is a small coding exercise designed to showcase how I build full stack software. The project is broken into multiple C# projects, encouraging modularity and preparing for growth and code reuse.
 
 The projects are:
-* `TaskList.Domain` – Contains domain entities and interfaces that define the heart of the application. Buiness logic will also be placed here were the application to expand.
-
-* `TaskList.Infrastructure` – Manages data persistence, database access, and integration with external services.
-
-* `TaskList.WebApi` – Exposes the backend functionality via a clean, secure RESTful API layer.
-
-* `TaskList.WebApp` – Provides the interactive front-end interface built for managing and visualizing tasks.
+- `TaskList.Domain` – Contains domain entities and interfaces that define the heart of the application. Buiness logic will also be placed here were the application to expand.
+- `TaskList.Infrastructure` – Manages data persistence, database access, and integration with external services.
+- `TaskList.WebApi` – Exposes the backend functionality via a clean, secure RESTful API layer.
+- `TaskList.WebApp` – Provides the interactive front-end interface built for managing and visualizing tasks.
 
 # Getting started
 ## Build and run
-* Clone the repository at https://github.com/apjanes/lemon-exercise.
-* Open a command prompt
-* Change directory to your `lemon-exercise` repository location
-* Run `run.bat`
+- Clone the repository at https://github.com/apjanes/lemon-exercise.
+- Open a command prompt
+- Change directory to your `lemon-exercise` repository location
+- Run `run.bat`
 
 This will build and run the application. The batch file launches two additional consoles (one for the backend and one for the frontend) where the code is built and run. This process can take a while, particularly on first build, due to the installation of NPM packages.
 
@@ -39,6 +36,46 @@ Once logged in using one of the pre-defined users, a Tasks page is shown
 It is assumed that the developer will have Microsoft .NET 9 and nodejs v22+. The ability to install NuGet and NPM packages is also assumed.
 
 The availability of Visual Studio 2022 is also assumed. This may not strictly be necessary but development was conducted using it and it will make it easier to review source code using it. Alternative IDEs such as VS Code may also be used.
+
+# Principles and choices
+## Primary keys
+One of the more debated decisions in EF and database design is the choice to use GUIDs as primary keys. My preference for GUIDs stems from two main advantages:
+
+Avoiding identity conflicts. GUIDs allow data to be distributed across multiple environments or servers without risking ID collisions.
+
+Predefining identities. Unlike integer identities, which are only available after persistence, GUIDs can be generated and known in advance, even before the entity is saved.
+
+That said, GUIDs introduce certain challenges — particularly with indexing performance. Because standard GUIDs are randomly distributed, clustered indexes become inefficient and prone to fragmentation. SQL Server and similar systems mitigate this with NEWSEQUENTIALID(), which generates sequential GUIDs, but this prevents pre-generation and loses ordering consistency across distributed systems.
+
+To achieve the best of both worlds, I use [COMB GUIDs](https://fastuuid.com/learn-about-uuids/comb-guids) (combined GUIDs). COMB GUIDs embed a UTC-based timestamp within otherwise random data, allowing for near-sequential ordering that supports efficient indexing while still enabling safe, distributed generation — assuming clock synchronization across systems.
+
+## Entity Framework configuration
+In EF Core, there are multiple ways to configure entities. Attributes such as `[MaxLength]` can be applied directly through data annotations, while more advanced configuration can be handled by overriding `OnModelCreating` in the `DbContext`. In many codebases, these two methods are used together.
+
+My preference, however, is to use `IEntityTypeConfiguration` implementations. Each entity has a corresponding configuration class that encapsulates all of its mapping and rules. These configurations are then registered in the `DbContext`:
+
+```
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    base.OnModelCreating(modelBuilder);
+    modelBuilder.ApplyConfiguration(new UserConfiguration());
+    modelBuilder.ApplyConfiguration(new WorkItemConfiguration());
+}
+```
+
+This approach keeps configuration logic organized, ensures a clear separation of concerns, and groups related settings by entity for better maintainability.
+
+## Warnings as errors
+All projects are configured to treat compiler warnings as errors, enforcing a consistent level of code quality across the entire solution. A shared .editorconfig file defines and customizes code style and analysis rules, ensuring uniform formatting and adherence to best practices. However, certain rules are intentionally relaxed for specific contexts to balance readability and practicality. For example, the restriction on using underscores in C# identifiers is lifted for test methods, allowing the descriptive Subject_Action_Expectation naming convention that clearly communicates a test’s purpose and intent.
+
+## Testing
+As part of this exercise, several unit tests have been included. While not comprehensive, they demonstrate my approach and understanding of test design. Each code assembly has a matching test assembly, with test classes aligned directly to the components they verify. The folder structure within each test project mirrors that of the corresponding code assembly for clarity and organization.
+
+An understanding of the role of interfaces and mocks is demonstrated, ensuring that tests remain repeatable and focused solely on the unit under test. The inclusion of database tests using an in-memory database context—with unique database names to prevent cross-test interference—further illustrates a clear approach to maintaining isolation and reliability in testing.
+
+In a real-world application, additional tests would be implemented but were omitted here due to time constraints. The UI could be covered with Jest unit tests, integration tests could verify interactions between components, and browser automation tests could validate complete end-to-end functionality. Each of these testing layers introduces its own challenges and trade-offs - for example, managing and maintaining realistic test data that can be easily reset between runs while avoiding "test bleed" in browser automation test.
+
+Automated testing in general presents some challenges and trade-offs like balancing test coverage against development speed, managing the maintenance cost of fragile UI or end-to-end tests, handling asynchronous behavior and state in integration scenarios, and ensuring tests remain fast, deterministic, and meaningful as the application evolves.
 
 # Architecture
 As described in the introduction, the solution is designed with two executable projects - one for the frontend (`TaskList.WebApp`) and one for the backend (`TaskList.WebApi`) as well as class libraries to keep the code modular and promote reusability should the project expand.
@@ -77,15 +114,3 @@ In this exercise the EF Core migrations are run automatically on startup. This i
 
 In a production application, particularly with high traffic, database concurrency needs better management. The use of timestamped version columns and concurrency checks would be benefical. The decision as to whether to practice optimistic or pessimistic concurrency management will depend on the nature of the production application. In the case of a task list, concurrency issues are low due to most lists being keyed to a restricted number of users with high levels of concurrent access being unlikely.
 
-# Code quality
-## Warnings as errors
-All projects are configured to treat compiler warnings as errors, enforcing a consistent level of code quality across the entire solution. A shared .editorconfig file defines and customizes code style and analysis rules, ensuring uniform formatting and adherence to best practices. However, certain rules are intentionally relaxed for specific contexts to balance readability and practicality. For example, the restriction on using underscores in C# identifiers is lifted for test methods, allowing the descriptive Subject_Action_Expectation naming convention that clearly communicates a test’s purpose and intent.
-
-# Testing
-As part of this exercise, several unit tests have been included. While not comprehensive, they demonstrate my approach and understanding of test design. Each code assembly has a matching test assembly, with test classes aligned directly to the components they verify. The folder structure within each test project mirrors that of the corresponding code assembly for clarity and organization.
-
-An understanding of the role of interfaces and mocks is demonstrated, ensuring that tests remain repeatable and focused solely on the unit under test. The inclusion of database tests using an in-memory database context—with unique database names to prevent cross-test interference—further illustrates a clear approach to maintaining isolation and reliability in testing.
-
-In a real-world application, additional tests would be implemented but were omitted here due to time constraints. The UI could be covered with Jest unit tests, integration tests could verify interactions between components, and browser automation tests could validate complete end-to-end functionality. Each of these testing layers introduces its own challenges and trade-offs - for example, managing and maintaining realistic test data that can be easily reset between runs while avoiding "test bleed" in browser automation test.
-
-Automated testing in general presents some challenges and trade-offs like balancing test coverage against development speed, managing the maintenance cost of fragile UI or end-to-end tests, handling asynchronous behavior and state in integration scenarios, and ensuring tests remain fast, deterministic, and meaningful as the application evolves.

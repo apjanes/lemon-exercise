@@ -7,7 +7,7 @@ The projects are:
 - `TaskList.WebApi` – Exposes the backend functionality via a clean, secure RESTful API layer.
 - `TaskList.WebApp` – Provides the interactive front-end interface built for managing and visualizing tasks.
 
-# Getting started
+# Getting Started
 ## Build and run
 - Clone the repository at https://github.com/apjanes/lemon-exercise.
 - Open a command prompt
@@ -19,7 +19,7 @@ This will build and run the application. The batch file launches two additional 
 The command will also launch a browser which points at https://localhost:4000/. This will require a refresh once the application has built successfully.
 
 # Usage
-Once the application is running, view it in a web browser at https://localhost:4000/. On initial load you will be redirected to a Login screen where you can proceed to login. For this exercise there are two available, hardcoded logins:
+OOnce the application is running, open a web browser and navigate to `https://localhost:4000/`. On first load, you’ll be redirected to a Login screen where you can authenticate using one of the two predefined accounts:
 
 ```
 [
@@ -28,16 +28,36 @@ Once the application is running, view it in a web browser at https://localhost:4
 ]
 ```
 
-This is clearly not a production ready situation but is one used for ease of development and due to time constraints. In a production system of this nature, a user sign up would typically be provided with email verification and a forgotten password recovery process.
+These hardcoded credentials are included purely for demonstration and development convenience. In a production system, user registration, email verification, and password recovery features would typically be implemented.
 
-Once logged in using one of the pre-defined users, a Tasks page is shown
+After logging in with one of the predefined users, you’ll be directed to the Tasks page. A blue “plus” icon on the right opens a dialog for creating a new task.
 
-# Assumptions
-It is assumed that the developer will have Microsoft .NET 9 and nodejs v22+. The ability to install NuGet and NPM packages is also assumed.
+## User Tasks
+In this exercise, each task is associated with a single user. This behavior is intended to demonstrate user isolation within the system. You can log in as each user and observe that their task lists differ based on the user who created them.
 
-The availability of Visual Studio 2022 is also assumed. This may not strictly be necessary but development was conducted using it and it will make it easier to review source code using it. Alternative IDEs such as VS Code may also be used.
+## Ordering
+By default, tasks are sorted with newest tasks at the top and completed tasks at the bottom. Sorting can be customized using the sort icons in the table headers.
 
-# Principles and choices
+## Actions
+Tasks can be managed using the Actions column alongside the Add (+) button.
+- The Edit icon opens the same dialog as “Add,” but prepopulated for the selected task.
+- The Delete icon prompts for confirmation before removing a task.
+
+In a production environment, a soft delete mechanism would likely be implemented instead of permanent removal.
+
+## Completion
+Each task includes a checkbox on the left to mark it as complete. When marked, the task automatically moves to the bottom of the list due to the default sorting behavior, which deprioritizes completed tasks.
+
+# Assumptions & limitations
+It is assumed that the developer has Microsoft .NET 9 and Node.js v22+ installed, along with the ability to install NuGet and NPM packages.
+
+The use of Visual Studio 2022 is also assumed. While not strictly required, development was conducted using it, and it provides the most convenient environment for reviewing and navigating the source code. Alternative IDEs such as VS Code may also be used.
+
+Some aspects of the solution remain incomplete or partially implemented. For example, features such as search and filtering would significantly enhance the user interface, and functionality like user registration and password recovery would be valuable additions.
+
+Documentation is provided throughout the codebase in selected areas, but it is not exhaustive. Similarly, tests are included but limited in scope. These serve to illustrate the general approach taken, though time constraints prevented a full implementation.
+
+# Principles & choices
 ## Primary keys
 One of the more debated decisions in EF and database design is the choice to use GUIDs as primary keys. My preference for GUIDs stems from two main advantages:
 
@@ -65,7 +85,7 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 
 This approach keeps configuration logic organized, ensures a clear separation of concerns, and groups related settings by entity for better maintainability.
 
-## Warnings as errors
+## Warnings as Errors
 All projects are configured to treat compiler warnings as errors, enforcing a consistent level of code quality across the entire solution. A shared .editorconfig file defines and customizes code style and analysis rules, ensuring uniform formatting and adherence to best practices. However, certain rules are intentionally relaxed for specific contexts to balance readability and practicality. For example, the restriction on using underscores in C# identifiers is lifted for test methods, allowing the descriptive Subject_Action_Expectation naming convention that clearly communicates a test’s purpose and intent.
 
 ## Testing
@@ -80,19 +100,19 @@ Automated testing in general presents some challenges and trade-offs like balanc
 # Architecture
 As described in the introduction, the solution is designed with two executable projects - one for the frontend (`TaskList.WebApp`) and one for the backend (`TaskList.WebApi`) as well as class libraries to keep the code modular and promote reusability should the project expand.
 
-## TaskList.WebApp
+## Web Application
 This is the application for the frontend which provides the web server endpoint for viewing the application. This endpoint runs at https://localhost:4000/. Because the UI is written entirely in React and contained in a JavaScript bundle which is transpiled by webpack, this project is very minimal. The project simply launches a development server which serves an `index.html` file which references the `app.js` bundle from `wwwroot/dist`.
 
 The React app is a TypeScript, React 18 single-page app wired up with Webpack, React Router v6, TanStack React Query, PrimeReact, and SCSS. It’s organized by responsibility: /pages for screens (Login, Home), /components for layout, dialogs, icons, and a ProtectedRoute, /hooks for data hooks like useWorkItems, /api for Axios clients (apiClient, auth, workItems) with a request interceptor that injects a bearer token from a minimal in-memory tokenStore and refresh logic via HttpOnly cookie, and /models for DTOs. 
 
 Authentication is centralized in an AuthProvider (context) that exposes login/logout and guards routes; server data is fetched/cached with React Query, forms use react-hook-form, and the Home page renders work items with PrimeReact’s DataTable and modal dialogs. The app is composed in src/index.tsx where the providers and router are mounted.
 
-## TaskList.WebApi
+## Web API
 `TaskList.WebApi` is an ASP.NET Core 9 REST API that layers cleanly over the Domain and Infrastructure projects. It wires up EF Core (SQLite) via TaskListDbContext, repository interfaces (e.g., IUserRepository, IWorkItemRepository) through DI, and secures endpoints with JWT bearer auth plus a refresh-token flow using an HttpOnly cookie (/auth path) backed by an in-memory refresh store.
 
 There are many improvements to be considered for a production-ready application. For example:
 
-### Security and Authorization
+### Security & Authorization
 Refresh tokens should use a database backed store. Token rotation can be added to prevent reuse and detection for reuse implemented. This will limit damage should a token be compromised as the tokens cannot be reused for repeated, unauthorized operations.
 
 Fingerprinting of IP addresses and user agents will help with detection of possibly token misuse and allow mitigation of attacks.

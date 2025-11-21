@@ -19,7 +19,7 @@ This will build and run the application. The batch file launches two additional 
 The command will also launch a browser which points at https://localhost:4000/. This will require a refresh once the application has built successfully.
 
 # Usage
-OOnce the application is running, open a web browser and navigate to `https://localhost:4000/`. On first load, you’ll be redirected to a Login screen where you can authenticate using one of the two predefined accounts:
+Once the application is running, open a web browser and navigate to `https://localhost:4000/`. On first load, you’ll be redirected to a Login screen where you can authenticate using one of the two predefined accounts:
 
 ```
 [
@@ -30,7 +30,10 @@ OOnce the application is running, open a web browser and navigate to `https://lo
 
 These hardcoded credentials are included purely for demonstration and development convenience. In a production system, user registration, email verification, and password recovery features would typically be implemented.
 
-After logging in with one of the predefined users, you’ll be directed to the Tasks page. A blue “plus” icon on the right opens a dialog for creating a new task.
+After logging in with one of the predefined users, you’ll be directed to the Tasks page.
+
+## Adding a Task
+On the right hand side of the page, a blue “plus” icon on the right opens a dialog for creating a new task. The title field is required.
 
 ## User Tasks
 In this exercise, each task is associated with a single user. This behavior is intended to demonstrate user isolation within the system. You can log in as each user and observe that their task lists differ based on the user who created them.
@@ -48,7 +51,7 @@ In a production environment, a soft delete mechanism would likely be implemented
 ## Completion
 Each task includes a checkbox on the left to mark it as complete. When marked, the task automatically moves to the bottom of the list due to the default sorting behavior, which deprioritizes completed tasks.
 
-# Assumptions & limitations
+# Assumptions & Limitations
 It is assumed that the developer has Microsoft .NET 9 and Node.js v22+ installed, along with the ability to install NuGet and NPM packages.
 
 The use of Visual Studio 2022 is also assumed. While not strictly required, development was conducted using it, and it provides the most convenient environment for reviewing and navigating the source code. Alternative IDEs such as VS Code may also be used.
@@ -57,8 +60,8 @@ Some aspects of the solution remain incomplete or partially implemented. For exa
 
 Documentation is provided throughout the codebase in selected areas, but it is not exhaustive. Similarly, tests are included but limited in scope. These serve to illustrate the general approach taken, though time constraints prevented a full implementation.
 
-# Principles & choices
-## Primary keys
+# Principles & Choices
+## Primary kKys
 One of the more debated decisions in EF and database design is the choice to use GUIDs as primary keys. My preference for GUIDs stems from two main advantages:
 
 Avoiding identity conflicts. GUIDs allow data to be distributed across multiple environments or servers without risking ID collisions.
@@ -69,7 +72,7 @@ That said, GUIDs introduce certain challenges — particularly with indexing perfo
 
 To achieve the best of both worlds, I use [COMB GUIDs](https://fastuuid.com/learn-about-uuids/comb-guids) (combined GUIDs). COMB GUIDs embed a UTC-based timestamp within otherwise random data, allowing for near-sequential ordering that supports efficient indexing while still enabling safe, distributed generation — assuming clock synchronization across systems.
 
-## Entity Framework configuration
+## Entity Framework Configuration
 In EF Core, there are multiple ways to configure entities. Attributes such as `[MaxLength]` can be applied directly through data annotations, while more advanced configuration can be handled by overriding `OnModelCreating` in the `DbContext`. In many codebases, these two methods are used together.
 
 My preference, however, is to use `IEntityTypeConfiguration` implementations. Each entity has a corresponding configuration class that encapsulates all of its mapping and rules. These configurations are then registered in the `DbContext`:
@@ -108,7 +111,7 @@ The React app is a TypeScript, React 18 single-page app wired up with Webpack, R
 Authentication is centralized in an AuthProvider (context) that exposes login/logout and guards routes; server data is fetched/cached with React Query, forms use react-hook-form, and the Home page renders work items with PrimeReact’s DataTable and modal dialogs. The app is composed in src/index.tsx where the providers and router are mounted.
 
 ## Web API
-`TaskList.WebApi` is an ASP.NET Core 9 REST API that layers cleanly over the Domain and Infrastructure projects. It wires up EF Core (SQLite) via TaskListDbContext, repository interfaces (e.g., IUserRepository, IWorkItemRepository) through DI, and secures endpoints with JWT bearer auth plus a refresh-token flow using an HttpOnly cookie (/auth path) backed by an in-memory refresh store.
+The API is an ASP.NET Core 9 REST API that layers cleanly over the Domain and Infrastructure projects. It wires up EF Core (SQLite) via TaskListDbContext, repository interfaces (e.g., IUserRepository, IWorkItemRepository) through DI, and secures endpoints with JWT bearer auth plus a refresh-token flow using an HttpOnly cookie (/auth path) backed by an in-memory refresh store.
 
 There are many improvements to be considered for a production-ready application. For example:
 

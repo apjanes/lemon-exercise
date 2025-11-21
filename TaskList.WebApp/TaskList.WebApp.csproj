@@ -18,21 +18,18 @@
     <NpmStamp>$(ClientDir)\.npmci.stamp</NpmStamp>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\dist\" />
+  </ItemGroup>
+
   <!-- Restore node modules only when lockfile changes -->
-  <Target Name="NpmRestore"
-          Inputs="$(ClientDir)\package-lock.json"
-          Outputs="$(NpmStamp)"
-          BeforeTargets="Build">
+  <Target Name="NpmRestore" Inputs="$(ClientDir)\package-lock.json" Outputs="$(NpmStamp)" BeforeTargets="Build">
     <Exec WorkingDirectory="$(ClientDir)" Command="npm ci" />
     <Touch Files="$(NpmStamp)" AlwaysCreate="true" />
   </Target>
 
   <!-- Build frontend only when sources/config changed -->
-  <Target Name="NpmBuild"
-          DependsOnTargets="NpmRestore"
-          Inputs="$(ClientSrc);$(ClientCfg);$(NpmStamp)"
-          Outputs="$(DistDir)\app.js"
-          BeforeTargets="Build">
+  <Target Name="NpmBuild" DependsOnTargets="NpmRestore" Inputs="$(ClientSrc);$(ClientCfg);$(NpmStamp)" Outputs="$(DistDir)\app.js" BeforeTargets="Build">
     <Exec WorkingDirectory="$(ClientDir)" Command="npm run build" />
   </Target>
 </Project>

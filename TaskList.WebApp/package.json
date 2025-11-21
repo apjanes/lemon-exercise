@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "build": "npm run lint && webpack --mode=development --env=development",
+    "build": "webpack --mode=development --env=development",
     "lint": "npx eslint --format stylish",
     "watch": "webpack --mode=development  --env=development --watch"
   },

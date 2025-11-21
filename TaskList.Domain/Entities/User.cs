@@ -10,7 +10,6 @@ public class User
 
     public Guid Id { get; set; }
 
-    // DEBUG: add info about security stamp
     public required string Username { get; set; }
 
     public required string PasswordHash { get; set; }

@@ -6,15 +6,34 @@ using System.Collections.Concurrent;
 
 namespace TaskList.WebApi.Filters;
 
+/// <summary>
+/// An ASP.NET Core action filter that automatically runs FluentValidation validators
+/// against incoming action parameters before the controller action executes.
+/// </summary>
+/// <remarks>
+/// This filter uses dependency injection to resolve <see cref="IValidator{T}"/> instances
+/// for each action argument. If validation fails, the request is short-circuited and
+/// a <see cref="BadRequestObjectResult"/> containing a <see cref="ValidationProblemDetails"/>
+/// is returned to the client.
+/// </remarks>
 public sealed class FluentValidationActionFilter : IAsyncActionFilter
 {
     private readonly ILogger<FluentValidationActionFilter> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FluentValidationActionFilter"/> class.
+    /// </summary>
+    /// <param name="logger">The logger used to record validation events or errors.</param>
     public FluentValidationActionFilter(ILogger<FluentValidationActionFilter> logger)
     {
         _logger = logger;
     }
 
+    /// <summary>
+    /// Executes validation logic before the target action is invoked.
+    /// </summary>
+    /// <param name="context">The current <see cref="ActionExecutingContext"/> containing action arguments and HTTP context.</param>
+    /// <param name="next">The delegate to execute the next filter or action if validation passes.</param>
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         var http = context.HttpContext;

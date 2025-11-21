@@ -101,11 +101,11 @@ function HomePage(): React.ReactElement {
     <AppLayout>
       <div className="home-page">
         <h1 className="home-page__title">
-          Work Items{" "}
+          Tasks{" "}
           <div className="home-page__title-content">
             <Button
               type="button"
-              aria-label="Add new work item"
+              aria-label="Add new task"
               icon="pi pi-plus"
               onClick={handleAddClicked}
             />
@@ -114,7 +114,7 @@ function HomePage(): React.ReactElement {
         <DataTable
           value={workItems}
           loading={isPending}
-          emptyMessage="No work items found."
+          emptyMessage="No task are found."
           removableSort
         >
           <Column

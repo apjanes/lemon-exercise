@@ -20,7 +20,7 @@ export function AppLayout({ children }: IProps): React.ReactElement<IProps> {
           Task List
         </div>
         <div className="layout__header-right-content">
-          {isAuthenticated && (
+          {isAuthenticated() && (
             <Button label="Logout" onClick={handleLogoutClick} />
           )}
         </div>

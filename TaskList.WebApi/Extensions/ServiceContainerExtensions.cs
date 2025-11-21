@@ -5,11 +5,19 @@ using TaskList.Domain.Repositories;
 using TaskList.Infrastructure;
 using TaskList.Infrastructure.Repositories;
 using TaskList.WebApi.Authentication;
+using TaskList.WebApi.ErrorHandling;
 
 namespace TaskList.WebApi.Extensions;
 
 public static class ServiceContainerExtensions
 {
+    public static IServiceCollection AddMiddleware(this IServiceCollection services)
+    {
+        services.AddTransient<ErrorHandlingMiddleware>();
+        return services;
+
+    }
+
     public static IServiceCollection AddTaskList(this IServiceCollection services)
     {
         services.AddDbContext<TaskListDbContext>(x =>
@@ -45,15 +53,14 @@ public static class ServiceContainerExtensions
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    // DEBUG: fix;
-#pragma warning disable CA5404
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = jwtConfiguration.SigningKey,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                     ValidateLifetime = true,
+                    ValidAudience = jwtConfiguration.Audience,
+                    ValidIssuer = jwtConfiguration.Issuer,
                     ClockSkew = TimeSpan.FromMinutes(2)
-#pragma warning restore CA5404
                 };
             });
 

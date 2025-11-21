@@ -29,7 +29,9 @@ public class TokenService
         };
 
         var token = new JwtSecurityToken(
+            audience: _configuration.Audience,
             claims: claims,
+            issuer: _configuration.Issuer,
             expires: expires,
             notBefore: now,
             signingCredentials: credentials);

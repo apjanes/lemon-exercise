@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using TaskList.Domain.Repositories;
 using TaskList.WebApi.Authentication;
 using TaskList.WebApi.Dtos;
@@ -26,7 +25,6 @@ public class AuthController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto request)
     {
-        // DEBUG:
         var user = await _userRepository.FindAsync(request.Username, request.Password);
         if (user == null)
         {
@@ -59,14 +57,6 @@ public class AuthController : Controller
         return Ok();
     }
 
-    // DEBUG: remove if unnecessary
-    [HttpGet("me")]
-    public IActionResult GetMeAsync()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return Ok();
-    }
-
     [HttpPost("refresh")]
     [AllowAnonymous]
     public async Task<IActionResult> RefreshAsync()
@@ -95,8 +85,6 @@ public class AuthController : Controller
 
     private void SetRefreshCookie(string refreshToken, DateTimeOffset expiresAt)
     {
-        Response.Cookies.Append("test", "test");
-
         Response.Cookies.Append("rt", refreshToken, new CookieOptions
         {
             HttpOnly = true,

@@ -9,7 +9,7 @@ export default function ProtectedRoute(): React.ReactElement {
     return <div>Loading...</div>;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated()) {
     return <Navigate to="/login" replace />;
   }
 

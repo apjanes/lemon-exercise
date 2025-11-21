@@ -8,7 +8,7 @@ const auth = {
       password,
     });
     const { accessToken } = data;
-    return accessToken || null;
+    return accessToken;
   },
 
   async logout(): Promise<void> {

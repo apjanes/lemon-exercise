@@ -59,8 +59,6 @@ public class WorkItemsController : Controller
     [HttpPut("{id}/complete/{isComplete}")]
     public async Task<ActionResult<WorkItemDto>> CompleteAsync(Guid id, bool isComplete)
     {
-        // DEBUG: finish
-        await Task.Delay(0);
         if (id == Guid.Empty) return NotFound();
 
         var result = await _repository.SetComplete(id, isComplete);

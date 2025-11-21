@@ -82,7 +82,6 @@ public class WorkItemRepository : IWorkItemRepository
 
     public async Task<WorkItem?> UpdateAsync(Guid id, WorkItem workItem, CancellationToken cancellationToken)
     {
-        // DEBUG: Handle error
         var existing = await FindAsync(id, cancellationToken);
 
         if (existing == null) return null;

@@ -5,12 +5,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { setAccessToken } from "~/tokenStore";
+import { getAccessToken, setAccessToken } from "~/tokenStore";
 import auth from "~/api/auth";
 
 interface AuthContextType {
   accessToken: string | null;
-  isAuthenticated: boolean;
+  isAuthenticated: () => boolean;
   isInitializing?: boolean;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -36,9 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     })();
   }, []);
 
-  const isAuthenticated = useMemo(() => {
-    return accessTokenState !== null;
-  }, [accessTokenState, isInitializing]);
+  const isAuthenticated = () => !!getAccessToken();
 
   const login = async (username: string, password: string) => {
     const token = await auth.login(username, password);
@@ -57,7 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         accessToken: accessTokenState,
-        isAuthenticated: isAuthenticated,
+        isAuthenticated,
         isInitializing,
         login,
         logout,

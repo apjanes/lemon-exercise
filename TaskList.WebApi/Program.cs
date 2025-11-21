@@ -1,7 +1,11 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskList.Domain.Entities;
 using TaskList.Infrastructure;
+using TaskList.WebApi.ErrorHandling;
 using TaskList.WebApi.Extensions;
+using TaskList.WebApi.Filters;
 
 namespace TaskList.WebApi;
 
@@ -9,34 +13,15 @@ public static class Program
 {
     public static async Task Main(string[] args)
     {
-        /* DEBUG:
-        // Populating users and passwords like this is completely unsuitable for production applications. This is done
-           // purely for easy of developing the exercise.
-           var flintstoneHash = "AQAAAAEAACcQAAAAEEzWXygc1o8QVxhOzEVaaL/UMIyVOVMkMGiSdnG9SCKQw1yrZ3oIxmnZh2kPguIEMQ==";
-           var rubbleHash = "AQAAAAEAACcQAAAAEDxSrZuI7KgZzTFboZNS9ZeWzJIj3l/KI67tETVtLPnRpuaet5LKBbx1GbtiOjldNw==";
-
-           builder
-               .HasData(new User
-               {
-                   Id = new Guid("0000019a-a11c-f278-f6dc-915e81c6b2d0"),
-                   Username = "fred",
-                   PasswordHash = flintstoneHash
-               }, new User
-               {
-                   Id = new Guid("0000019a-a11c-f279-00ea-7ec897888d30"),
-                   Username = "barney",
-                   PasswordHash = rubbleHash
-               });
-        */
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add task list dependencies
         builder.Services.AddTaskList();
+        builder.Services.AddMiddleware();
+        builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+        builder.Services.AddControllers(x => x.Filters.Add<FluentValidationActionFilter>());
         builder.Services.AddControllers();
-
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.Configure<ApiBehaviorOptions>(x => x.SuppressModelStateInvalidFilter = true);
         builder.Services.AddEndpointsApiExplorer();
-
         builder.Services.AddSwaggerGen();
         builder.Services.AddJwtAuthentication(builder.Configuration);
         builder.Services.AddAuthorization();
@@ -55,6 +40,8 @@ public static class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
+        app.UseMiddleware<ErrorHandlingMiddleware>();
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

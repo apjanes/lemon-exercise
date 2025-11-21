@@ -11,10 +11,16 @@ public sealed class JwtConfiguration : IJwtConfiguration
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
-        Key = Require(configuration, sectionName, "Key"); //$"{sectionName}:Key");
+        Audience = Require(configuration, sectionName, "Audience");
+        Issuer = Require(configuration, sectionName, "Issuer");
+        Key = Require(configuration, sectionName, "Key");
 
         SigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
     }
+
+    public string Audience { get; }
+
+    public string Issuer { get; }
 
     public string Key { get; }
 

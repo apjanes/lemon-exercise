@@ -6,27 +6,42 @@ import { InputText } from "primereact/inputtext";
 import AppLayout from "~/components/AppLayout";
 import { useAuth } from "~/providers/AuthProvider";
 import "~/pages/LoginPage.scss";
+import { AxiosError } from "axios";
 
 function LoginPage(): React.ReactElement {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { login: login, isAuthenticated } = useAuth();
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const handleOnClick = async () => {
-    await login(username, password);
+    try {
+      await login(username, password);
+      if (isAuthenticated()) {
+        navigate("/", { replace: true });
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError?.status === 401) {
+        setErrorMessage("Invalid username or password.");
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
+    }
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/", { replace: true });
-    }
-  }, [isAuthenticated]);
+  if (isAuthenticated()) {
+    navigate("/", { replace: true });
+  }
 
   return (
     <AppLayout>
       <div className="login-page">
         <h1>Login</h1>
         <Card>
+          {errorMessage && (
+            <div className="login-page__error">{errorMessage}</div>
+          )}
           <div className="login-page__row">
             <label className="login-page__label" htmlFor="username">
               Username:

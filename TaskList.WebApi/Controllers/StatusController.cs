@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace TaskList.WebApi.Controllers;
 
 [ApiController]
-[Authorize]
+[AllowAnonymous]
 [Route("[controller]")]
 public class StatusController : ControllerBase
 {
@@ -18,12 +18,6 @@ public class StatusController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var status = new
-        {
-            EnvironmentAspNetCore = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
-            EnvironmentConfig = _config.GetValue<string>("Environment")
-        };
-
-        return Ok(status);
+        return Ok("Alive");
     }
 }

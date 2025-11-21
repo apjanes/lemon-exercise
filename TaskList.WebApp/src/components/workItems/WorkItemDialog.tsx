@@ -29,6 +29,7 @@ export function WorkItemDialog({
     handleSubmit,
     register,
     reset,
+    setError,
   } = useForm<WorkItem>();
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export function WorkItemDialog({
           <InputText
             className="work-item-dialog__input"
             id="title-input"
+            maxLength={500}
             {...register("title", { required: "title is required" })}
           />
         </div>
@@ -99,6 +101,7 @@ export function WorkItemDialog({
           <InputTextarea
             className="work-item-dialog__input"
             id="description-input"
+            maxLength={1000}
             {...register("description")}
           />
         </div>
